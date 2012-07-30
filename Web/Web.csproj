@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{6370FCA6-043E-4D2A-8F21-D4ED5D74E8FE}</ProjectGuid>
+    <ProjectGuid>{8B4170AC-FDEE-4343-AF66-D6712BB55C35}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Oyster.Core</RootNamespace>
-    <AssemblyName>Oyster.Core</AssemblyName>
+    <RootNamespace>Oyster.Web</RootNamespace>
+    <AssemblyName>Oyster.Web</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,53 +31,42 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MySql.Data, Version=6.2.2.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libs\MySql.Data.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
-    <Reference Include="System.Data.OracleClient" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.Routing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cache\CacheEngine.cs" />
-    <Compile Include="Cache\CacheEntry.cs" />
-    <Compile Include="Cache\DotNetCache.cs" />
-    <Compile Include="Cache\ICache.cs" />
-    <Compile Include="Cache\ModelCacheEntry.cs" />
-    <Compile Include="Db\DbEngine.cs" />
-    <Compile Include="Db\DbTran.cs" />
-    <Compile Include="Db\IDbEngine.cs" />
-    <Compile Include="Db\ParameterCollection.cs" />
-    <Compile Include="Orm\IModel.cs" />
-    <Compile Include="Orm\IModelEngine.cs" />
-    <Compile Include="Orm\OyEngineM.cs" />
-    <Compile Include="Orm\ModelEngine.cs" />
-    <Compile Include="Orm\ModelEngineCache.cs" />
-    <Compile Include="Orm\ModelEngineDb.cs" />
-    <Compile Include="Orm\MReflection.cs" />
-    <Compile Include="Orm\OyCondition.cs" />
-    <Compile Include="Orm\OyConditionStr.cs" />
-    <Compile Include="Orm\OyEngine.cs" />
-    <Compile Include="Orm\OyEnums.cs" />
-    <Compile Include="Tool\OyExtends.cs" />
-    <Compile Include="Orm\OyOrderBy.cs" />
-    <Compile Include="Orm\OyValue.cs" />
+    <Compile Include="Mvc\BController.cs" />
+    <Compile Include="Mvc\BHttpContext.cs" />
+    <Compile Include="Mvc\BMvcRouteHandler.cs" />
+    <Compile Include="Mvc\BRequestContext.cs" />
+    <Compile Include="Mvc\BRoute.cs" />
+    <Compile Include="Mvc\ContentHandler.cs" />
+    <Compile Include="Mvc\ControllerFactory.cs" />
+    <Compile Include="Mvc\ExcelResult.cs" />
+    <Compile Include="Mvc\MvcApplication.cs" />
+    <Compile Include="Mvc\MvcConfig.cs" />
+    <Compile Include="Mvc\MvcEnginer.cs" />
+    <Compile Include="Mvc\MvcViewEngine.cs" />
+    <Compile Include="Mvc\MvcViewPathHelper.cs" />
+    <Compile Include="Mvc\Settings\ConfigEnginer.cs" />
+    <Compile Include="Mvc\Settings\MvcConfig.cs" />
+    <Compile Include="Mvc\ViewPageX.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Config\AppConfig.cs" />
-    <Compile Include="Tool\Context.cs" />
-    <Compile Include="Tool\InstanceHelper.cs" />
-    <Compile Include="Tool\OyTools.cs" />
+    <Compile Include="Tool\Extends.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Libs\OyEntity.cst" />
+    <ProjectReference Include="..\Core\Core.csproj">
+      <Project>{6370FCA6-043E-4D2A-8F21-D4ED5D74E8FE}</Project>
+      <Name>Core</Name>
+    </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Libs\MySql.Data.dll" />
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Oyster
+namespace Oyster.Core
 {
     /// <summary>
     /// 需要改变默认配置需要继承本类

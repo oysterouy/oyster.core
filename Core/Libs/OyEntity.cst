@@ -1,0 +1,167 @@
+﻿<%-- 
+Name	: Entity.cst
+Author	: Oyster
+Description: This template generates a simplistic entity object.  It can only be used from
+   the master since the property grid does not support selecting an individual element.
+--%>
+<%@ CodeTemplate Language="C#" ResponseEncoding="UTF-8" %> 
+<%@ CodeTemplate Language="C#" TargetLanguage="C#" Debug="False" Description="Creates a simplistic entity object." %>
+
+<%@ Property Name="SourceTable" Type="SchemaExplorer.TableSchema" Category="Context" Description="Table that the stored procedures should be based on." %>
+<%@ Assembly Name="SchemaExplorer" %>
+<%@ Import Namespace="SchemaExplorer" %>
+
+using System;
+
+namespace Models
+{
+	/// <summary>
+	/// Code By Tool <%= DateTime.Now.ToString()%>
+	/// This is a Entity class	
+    /// <%= SourceTable.Database.Description%>
+	/// </summary>
+	[Serializable]
+	public class <%= StringUtil.ToPascalCase(SourceTable.Name) %> : IModel
+	{
+		public Type zModelType
+        {
+            get { return typeof(<%= StringUtil.ToPascalCase(SourceTable.Name) %>); }
+        }
+        public string zTableName
+        {
+            get { return "<%= SourceTable.Name%>"; }
+        }
+		
+		#region public - FieldsInfo
+		<% for (int i = 0; i < SourceTable.Columns.Count; i++) { %>
+		public <%=GetSystemType(SourceTable.Columns[i]) %><%=SourceTable.Columns[i].AllowDBNull.ToString().ToLower()=="true"&& SourceTable.Columns[i].SystemType.ToString()!="System.String"&& SourceTable.Columns[i].SystemType.ToString()!="System.Object" ? "?":""%>  <%=GetColumnName(SourceTable.Columns[i])  %>;
+		<% } %>
+		#endregion
+		
+		#region Const - FieldsInfo
+		<% for (int i = 0; i < SourceTable.Columns.Count; i++) { 
+			string colname=GetColumnName(SourceTable.Columns[i]);
+			string constcolname="";
+			if(!string.IsNullOrEmpty(colname) && colname.Length>1){
+				constcolname=colname[0].ToString().ToLower()+colname[1].ToString().ToUpper()+colname.Substring(2);
+			}else{
+				constcolname=colname.ToLower();
+			}
+			%>
+		public const string <%= constcolname  %>="<%=GetColumnName(SourceTable.Columns[i])  %>";
+		<% } %>
+		#endregion		
+		<script runat="template">
+		public string GetColumnName(ColumnSchema column)
+		{
+			string result= StringUtil.ToPascalCase(column.Name);
+			
+			if(result.ToCharArray().Length>1)
+			{
+				if(result.Substring(0,1).Equals(result.Substring(0,1).ToUpper())
+				 &&
+				result.Substring(1,1).Equals(result.Substring(1,1).ToUpper())
+				)
+				return result.Substring(0,1).ToUpper()+result.ToLower().Substring(1,result.Length-1);
+		    }
+			
+			return result;
+		}
+		public string GetSystemType(ColumnSchema column )
+		{
+			System.Type _typeName=column.SystemType;
+			int scale  =column.Scale;
+			
+			if(_typeName.ToString().Equals("System.Decimal"))
+			{
+				if((column.Precision==1&&column.Name.ToLower().StartsWith("is"))||column.GetType().ToString()=="System.Boolean")
+				{
+					return "System.Boolean";
+				}
+			    else
+				{
+					if(scale==0)
+					{
+						return "System.Int32";
+					}
+					else if(scale==2||scale==-2)
+					{
+						return "System.Decimal";
+					}
+					else
+					{
+						return "System.Double";
+					}
+				}
+				
+			}
+			else
+				return _typeName.ToString();
+			
+		}
+		
+		
+		public string GetCSDataType(ColumnSchema column)
+        {
+            switch (column.DataType)
+            {
+
+              case DbType.AnsiString: return "DbType.String";
+
+              case DbType.AnsiStringFixedLength: return "DbType.String";
+
+              case DbType.Binary: return "DbType.Binary";
+
+              case DbType.Boolean: return "DbType.Boolean";
+
+              case DbType.Byte: return "DbType.Byte";
+
+              case DbType.Currency: return "DbType.Decimal";
+
+              case DbType.Date: return "DbType.DateTime";
+
+              case DbType.DateTime: return "DbType.DateTime";
+
+              case DbType.Decimal: return "DbType.Decimal";
+
+              case DbType.Double: return "DbType.Double";
+
+              case DbType.Guid: return "DbType.Guid";
+
+              case DbType.Int16: return "DbType.Int16";
+
+              case DbType.Int32: return "DbType.Int32";
+
+              case DbType.Int64: return "DbType.Int64";
+
+              case DbType.Object: return "DbType.Object";
+
+              case DbType.SByte: return "DbType.SByte";
+
+              case DbType.Single: return "DbType.Single";
+
+              case DbType.String: return "DbType.String";
+
+              case DbType.StringFixedLength: return "DbType.String";
+
+              case DbType.Time: return "DbType.Time";
+
+              case DbType.UInt16: return "DbType.UInt16";
+
+              case DbType.UInt32: return "DbType.UInt32";
+
+              case DbType.UInt64: return "DbType.UInt64";
+
+              case DbType.VarNumeric: return "DbType.Decimal";
+
+              default:
+              {
+                     return "__UNKNOWN__" + column.NativeType;
+              }
+
+          }
+
+       }
+	  </script>
+	}	
+}

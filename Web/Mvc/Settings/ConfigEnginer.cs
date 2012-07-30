@@ -59,16 +59,6 @@ namespace Oyster.Web.Mvc.Config
                     {
                         MvcConfig.Instance.Init(xmvc);
                     }
-                    //xmvc = setings.SelectSingleNode("Log");
-                    //if (xmvc != null)
-                    //{
-                    //    LogConfig.Instance.Init(xmvc);
-                    //}
-                    //xmvc = setings.SelectSingleNode("ErrorPages");
-                    //if (xmvc != null)
-                    //{
-                    //    ErrorPagesConfig.Instance.Init(xmvc);
-                    //}
                 }
             }
         }

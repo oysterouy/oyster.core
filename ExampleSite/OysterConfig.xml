@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Settings>
+  <Mvc>
+    <Routes>
+      <Route Name="Default" Format="{controller}/{action}/{id}">
+        <DefaultParams controller="Site" action="Index" id="UrlParameter.Optional" />
+
+      </Route>
+      <Route Name="Action" Format="{action}/{id}">
+        <DefaultParams controller="Site" action="Index" id="UrlParameter.Optional" />
+      </Route>
+      <Route Name="Content" Format="{*pathinfo}">
+        <DefaultParams handler="Oyster.MvcEngine.ContentHandler,Oyster" />
+      </Route>
+    </Routes>
+    <Formats>
+      <ContentFormats>
+        <Format>~/Themes/{1}/{0}</Format>
+        <Format>~/Views/Themes/{1}/{0}</Format>
+        <Format>~/Themes/{1}/Content/{0}</Format>
+        <Format>~/Views/Themes/{1}/Content/{0}</Format>
+      </ContentFormats>
+      <MasterLocationFormats>
+        <Format>~/Themes/{1}/Shared/{0}</Format>
+        <Format>~/Views/Themes/{1}/Shared/{0}</Format>
+      </MasterLocationFormats>
+      <ViewLocationFormats>
+        <!-- 重长到短，从参数多到少 -->
+        <Format>~/Themes/{1}/Site/{2}/{0}.cshtml</Format>
+        <Format>~/Themes/{1}/Site/{0}.cshtml</Format>
+        <Format>~/Themes/{1}/Shared/Controls/{2}/{0}.cshtml</Format>
+        <Format>~/Themes/{1}/Shared/Controls/{0}.cshtml</Format>
+        <Format>~/Themes/{1}/Shared/Common/{2}/{0}.cshtml</Format>
+        <Format>~/Themes/{1}/Shared/Common/{0}.cshtml</Format>
+        <Format>~/Themes/{1}/Shared/{2}/{0}.cshtml</Format>
+        <Format>~/Themes/{1}/Shared/{0}.cshtml</Format>
+        <!--With Views-->
+        <Format>~/Views/Themes/{1}/Site/{2}/{0}.cshtml</Format>
+        <Format>~/Views/Themes/{1}/Site/{0}.cshtml</Format>
+        <Format>~/Views/Themes/{1}/Shared/Controls/{2}/{0}.cshtml</Format>
+        <Format>~/Views/Themes/{1}/Shared/Controls/{0}.cshtml</Format>
+        <Format>~/Views/Themes/{1}/Shared/Common/{2}/{0}.cshtml</Format>
+        <Format>~/Views/Themes/{1}/Shared/Common/{0}.cshtml</Format>
+        <Format>~/Views/Themes/{1}/Shared/{2}/{0}.cshtml</Format>
+        <Format>~/Views/Themes/{1}/Shared/{0}.cshtml</Format>
+
+        <!-- 重长到短，从参数多到少 -->
+        <Format>~/Themes/{1}/Site/{2}/{0}.aspx</Format>
+        <Format>~/Themes/{1}/Site/{0}.aspx</Format>
+        <Format>~/Themes/{1}/Shared/Controls/{2}/{0}.ascx</Format>
+        <Format>~/Themes/{1}/Shared/Controls/{0}.ascx</Format>
+        <Format>~/Themes/{1}/Shared/Common/{2}/{0}.ascx</Format>
+        <Format>~/Themes/{1}/Shared/Common/{0}.ascx</Format>
+        <Format>~/Themes/{1}/Shared/{2}/{0}.ascx</Format>
+        <Format>~/Themes/{1}/Shared/{0}.ascx</Format>
+        <!--With Views-->
+        <Format>~/Views/Themes/{1}/Site/{2}/{0}.aspx</Format>
+        <Format>~/Views/Themes/{1}/Site/{0}.aspx</Format>
+        <Format>~/Views/Themes/{1}/Shared/Controls/{2}/{0}.ascx</Format>
+        <Format>~/Views/Themes/{1}/Shared/Controls/{0}.ascx</Format>
+        <Format>~/Views/Themes/{1}/Shared/Common/{2}/{0}.ascx</Format>
+        <Format>~/Views/Themes/{1}/Shared/Common/{0}.ascx</Format>
+        <Format>~/Views/Themes/{1}/Shared/{2}/{0}.ascx</Format>
+        <Format>~/Views/Themes/{1}/Shared/{0}.ascx</Format>
+      </ViewLocationFormats>
+      <PartialViewLocationFormats></PartialViewLocationFormats>
+      <AreaMasterLocationFormats></AreaMasterLocationFormats>
+      <AreaViewLocationFormats></AreaViewLocationFormats>
+      <AreaPartialViewLocationFormats></AreaPartialViewLocationFormats>
+    </Formats>
+    <Themes>
+      <Theme Default="true" Engine="Razor">Base</Theme>
+      <Theme Current="false" Engine="Razor">Msn</Theme>
+    </Themes>
+  </Mvc>
+  <Hosts>
+    <ContentHost>
+      <Host Url="" />
+    </ContentHost>
+    <StaticHost>
+      <Host Url="http://static.yobrand.com" />
+    </StaticHost>
+    <WebHost>
+      <Host Name="" Port="" />
+    </WebHost>
+  </Hosts>
+</Settings>

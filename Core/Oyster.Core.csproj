@@ -35,6 +35,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libs\MySql.Data.dll</HintPath>
     </Reference>
+    <Reference Include="nunit.framework, Version=2.6.0.12051, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libs\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Data.OracleClient" />
@@ -51,6 +55,8 @@
     <Compile Include="Db\DbTran.cs" />
     <Compile Include="Db\IDbEngine.cs" />
     <Compile Include="Db\ParameterCollection.cs" />
+    <Compile Include="NUnit\OyAssert.cs" />
+    <Compile Include="NUnit\OyNUnit.cs" />
     <Compile Include="Orm\IModel.cs" />
     <Compile Include="Orm\IModelEngine.cs" />
     <Compile Include="Orm\OyEngineM.cs" />
@@ -76,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Libs\MySql.Data.dll" />
+    <Content Include="Libs\nunit.framework.dll" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

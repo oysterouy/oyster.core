@@ -25,6 +25,10 @@ namespace Oyster.Web.Mvc
 
         protected override ViewResult View(string viewName, string masterName, object model)
         {
+            if (OyNUniting.IsUnitRuning)
+            {
+                return null;
+            }
             string view = viewName;
             string master = masterName;
             string defview = GetDefaultView();

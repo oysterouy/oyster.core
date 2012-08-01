@@ -10,7 +10,7 @@
         <DefaultParams controller="Site" action="Index" id="UrlParameter.Optional" />
       </Route>
       <Route Name="Content" Format="{*pathinfo}">
-        <DefaultParams handler="Oyster.MvcEngine.ContentHandler,Oyster" />
+        <DefaultParams handler="Oyster.Web.Mvc.ContentHandler,Oyster.Web" />
       </Route>
     </Routes>
     <Formats>

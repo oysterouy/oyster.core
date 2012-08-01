@@ -1,0 +1,8 @@
+﻿@{    
+    string master = "_Site.cshtml";
+    if (!string.IsNullOrEmpty(Layout))
+    {
+        master = Path.GetFileName(Layout);
+    }
+    Layout = Html.Master(master);
+}

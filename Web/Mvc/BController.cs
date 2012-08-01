@@ -84,6 +84,19 @@ namespace Oyster.Web.Mvc
             base.Execute(requestContext);
         }
 
+        protected override void HandleUnknownAction(string actionName)
+        {
+            if (actionName != "DefaultAction")
+            {
+                this.ControllerContext.RouteData.Values.Add("_original_action", actionName);
+                ActionInvoker.InvokeAction(ControllerContext, "DefaultAction");
+            }
+            else
+            {
+                base.HandleUnknownAction(actionName);
+            }
+        }
+
         #endregion
 
         #region 扩展
@@ -161,6 +174,19 @@ namespace Oyster.Web.Mvc
                 return ht;
             }
         }
+        #endregion
+
+        #region 默认Action
+
+        public ActionResult DefaultAction(string actionname = null)
+        {
+            if (this.ControllerContext.RouteData.Values.ContainsKey("_original_action"))
+            {
+                return View(this.ControllerContext.RouteData.Values["_original_action"]);
+            }
+            return View(actionname);
+        }
+
         #endregion
     }
 }

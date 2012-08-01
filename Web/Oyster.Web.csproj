@@ -62,7 +62,7 @@
     <Compile Include="Tool\Extends.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Core\Core.csproj">
+    <ProjectReference Include="..\Core\Oyster.Core.csproj">
       <Project>{6370FCA6-043E-4D2A-8F21-D4ED5D74E8FE}</Project>
       <Name>Core</Name>
     </ProjectReference>

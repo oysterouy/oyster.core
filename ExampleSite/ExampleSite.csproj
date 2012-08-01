@@ -50,7 +50,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
-    <Content Include="OysterConfig.xml" />
+    <Content Include="OysterConfig.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -60,7 +62,34 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Themes\Base\" />
+    <Folder Include="Themes\Base\Content\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Oyster.Core.csproj">
+      <Project>{6370FCA6-043E-4D2A-8F21-D4ED5D74E8FE}</Project>
+      <Name>Oyster.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExampleCore\ExampleCore.csproj">
+      <Project>{718A0B9E-397B-43C8-A258-D6C3E6F6F7B9}</Project>
+      <Name>ExampleCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Models\Models.csproj">
+      <Project>{C0F25BCC-B84F-43F7-B52E-04B191A7F692}</Project>
+      <Name>Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Web\Oyster.Web.csproj">
+      <Project>{8B4170AC-FDEE-4343-AF66-D6712BB55C35}</Project>
+      <Name>Oyster.Web</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Themes\Base\Shared\_Site.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Themes\ViewStart.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Themes\Base\Site\Index.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

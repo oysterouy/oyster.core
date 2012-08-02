@@ -13,7 +13,12 @@ namespace ExampleCore.Controller.Site
         public ActionResult Index(string name = null)
         {
             Proxy.UsersProxy p = new Proxy.UsersProxy();
-            OyAssert.AreEqual(p.GetUserName(), name);
+
+            if (OyNUniting.IsUnitRuning)
+            {
+                OyAssert.AreEqual(p.GetUserName(), name);
+            }
+
             return View();
         }
         #region Test

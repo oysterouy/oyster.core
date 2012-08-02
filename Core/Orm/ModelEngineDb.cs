@@ -94,7 +94,11 @@ namespace Oyster.Core.Orm
                 string condstr = condition.ToString(mode, parms);
                 if (!string.IsNullOrEmpty(condstr))
                 {
-                    string sql = string.Format("update {0} set {1},op_guid='{2}' where {3}", new string[] { mode.zTableName, valstr, opguid, condstr });
+                    var p = DbEngine.Instance.NewDataParameter("lastchange_time");
+                    p.Value = DateTime.Now;
+
+                    string sql = string.Format("update {0} set {1},op_guid='{2}',lastchange_time={3} where {4}"
+                        , new string[] { mode.zTableName, valstr, opguid, p.ParameterName, condstr });
                     return DbEngine.Instance.ExecuteNonQuery(sql, parms.Values.ToArray());
                 }
             }

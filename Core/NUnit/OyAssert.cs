@@ -5,7 +5,20 @@ using System.ComponentModel;
 
 namespace System
 {
-    public class OyAssert //: Assert
+    /// <summary>
+    /// 在实际代码中使用时，应加入如下判断
+    /// if (OyNUniting.IsUnitRuning) {
+    ///    OyAssert.AreEqual(Aobj, Bobj);
+    /// }
+    /// </summary>
+    public class OyAssert : Assert
+    {
+
+    }
+    #region old
+    /*
+    
+    public class OyAssert
     {
         private static int counter;
         public static int Counter
@@ -2580,4 +2593,7 @@ namespace System
             That(condition, Is.True, message, args);
         }
     }
+
+    */
+    #endregion
 }

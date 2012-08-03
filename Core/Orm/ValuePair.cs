@@ -5,30 +5,30 @@ using System.Text;
 using Oyster.Core.Db;
 using Oyster.Core.Orm;
 
-namespace System
+namespace Oyster.Core.Orm
 {
-    public class OyValue
+    public class ValuePair
     {
         public string Name;
         public object Value;
         public bool IsExpressionCondition { get { return !string.IsNullOrEmpty(Expression); } }
         public string Expression;
 
-        public OyValue Right;
+        public ValuePair Right;
 
-        public OyValue(string name, object value)
+        public ValuePair(string name, object value)
         {
             Name = name;
             Value = value;
         }
 
-        public OyValue(bool isexp, string expression, string name = "")
+        public ValuePair(bool isexp, string expression, string name = "")
         {
             Expression = expression;
             Name = name;
         }
 
-        public static OyValue operator &(OyValue left, OyValue right)
+        public static ValuePair operator &(ValuePair left, ValuePair right)
         {
             var lr = left;
             while (lr.Right != null)
@@ -39,9 +39,9 @@ namespace System
             return left;
         }
 
-        public string ToString(IModel mode, ParameterCollection paramlist)
+        public string ToString(Imodel mode, ParameterCollection paramlist)
         {
-            OyValue val = this;
+            ValuePair val = this;
             StringBuilder sbder = new StringBuilder();
             var diccols = MReflection.GetModelColumns(mode);
             if (!diccols.ContainsKey(val.Name))
@@ -82,10 +82,10 @@ namespace System
             return "";
         }
 
-        public IModel Update(IModel mode)
+        public Imodel Update(Imodel mode)
         {
             var ps = MReflection.GetMReflections(mode.zModelType);
-            OyValue val = this;
+            ValuePair val = this;
             if (ps != null)
             {
                 do

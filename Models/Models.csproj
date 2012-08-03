@@ -43,6 +43,12 @@
     <Compile Include="ExUsers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Oyster.Core.csproj">
+      <Project>{6370FCA6-043E-4D2A-8F21-D4ED5D74E8FE}</Project>
+      <Name>Oyster.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Reflection;
-using Oyster.Core.Db;
 using System.Data;
 using Oyster.Core.Cache;
-using Oyster.Core.Tool;
+using Oyster.Core.Db;
+using Oyster.Core.Common;
+
 
 namespace Oyster.Core.Orm
 {
@@ -123,7 +122,7 @@ namespace Oyster.Core.Orm
 
 
         static Dictionary<Type, Dictionary<string, string>> _modelscolumn;
-        public static Dictionary<string, string> GetModelColumns(IModel mode)
+        public static Dictionary<string, string> GetModelColumns(Imodel mode)
         {
             if (_modelscolumn == null)
             {
@@ -140,7 +139,7 @@ namespace Oyster.Core.Orm
                         foreach (DataRow r in dt.Rows)
                         {
                             string col = r["ColumnName"].ToString().ToLower();
-                            string k = OyTools.PascaName(col);
+                            string k = Helper.PascaName(col);
                             if (!cols.ContainsKey(k))
                             {
                                 cols.Add(k, col);

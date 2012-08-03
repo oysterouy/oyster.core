@@ -43,9 +43,9 @@ namespace Oyster.Core.Db
             get
             {
                 //启动了事务的数据库操作，全部走当前上下文的数据库操作引擎
-                if (OyTran.Current.IsTraning)
+                if (DbEngineTran.Instance.IsTraning)
                 {
-                    return OyTran.Current.DbEngineTran;
+                    return DbEngineTran.Instance;
                 }
                 if (_instance == null)
                 {
@@ -288,7 +288,7 @@ namespace Oyster.Core.Db
             }
         }
 
-        protected IDbCommand NewCommand(string sql = "", IList<System.Data.IDataParameter> paramters = null)
+        protected IDbCommand NewCommand(string sql = "", IList<IDataParameter> paramters = null)
         {
             var cmd = DbConnection.CreateCommand();
             if (IsTraning)
@@ -310,7 +310,7 @@ namespace Oyster.Core.Db
             return cmd;
         }
 
-        protected IDataAdapter NewDataAdapter(string sql, IList<System.Data.IDataParameter> paramters = null)
+        protected IDataAdapter NewDataAdapter(string sql, IList<IDataParameter> paramters = null)
         {
             IDataAdapter adapter = null;
 
@@ -330,6 +330,15 @@ namespace Oyster.Core.Db
             }
 
             return adapter == null ? new MySqlDataAdapter(cmd as MySqlCommand) : adapter;
+        }
+
+        /// <summary>
+        /// 使用ParameterCollection，自动根据数据引擎转换参数格式和名称，和避免重名
+        /// </summary>
+        /// <returns></returns>
+        public static ParameterCollection NewParameters()
+        {
+            return new ParameterCollection();
         }
     }
 }

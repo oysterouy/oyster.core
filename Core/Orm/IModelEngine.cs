@@ -1,24 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+
 
 namespace Oyster.Core.Orm
 {
     public interface IModelEngine
     {
-        IModel GetById(IModel mode, long Mid);
-        IList<IModel> Filter(IModel m, OyCondition condition, MPager mp = null, OyOrderBy orderby = null);
-        IDictionary<long, object> FilterWithId(IModel m, OyCondition condition, MPager mp = null, OyOrderBy orderby = null);
+        Imodel GetById(Imodel mode, long Mid);
+        IDictionary<long, Imodel> GetByIds(Imodel mode, IList<long> Mids);
+        IDictionary<long, Imodel> GetByOpGuid(Imodel mode, string guid);
 
-        int Update(IModel mode, OyValue val, OyCondition condition);
-        int Update(IModel mode, OyValue val, OyCondition condition, out string opguid);
+        IList<Imodel> Filter(Imodel m, Condition condition, Mpager mp = null, OrderBy orderby = null);
+        IDictionary<long, Imodel> FilterWithId(Imodel m, Condition condition, Mpager mp = null, OrderBy orderby = null);
+
+        int Update(Imodel mode, ValuePair val, Condition condition);
+        int Update(Imodel mode, ValuePair val, Condition condition, out string opguid);
 
         /// <summary>
-        /// 插入数据 操作成功 返回操作KEY（database => opguid;cache => cache key),失败返回null;
+        /// 插入数据 操作成功 返回操作KEY（opguid),失败返回null;
         /// </summary>
         /// <param name="mode"></param>
         /// <returns></returns>
-        string Insert(IModel mode);
+        string Insert(Imodel mode);
+        /// <summary>
+        /// 优先级-决定在引擎中的排序，请保证Cache引擎比非Cache优先级高
+        /// </summary>
+        int Level { get; set; }
     }
 }

@@ -4,18 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Runtime.Remoting.Messaging;
 
-namespace Oyster.Core.Tool
+namespace Oyster.Core.Common
 {
-    public class OyContext
+    public class ContextHelper
     {
-        protected static OyContext instance;
-        public static OyContext Instance
+        protected static ContextHelper instance;
+        public static ContextHelper Instance
         {
             get
             {
                 if (instance == null)
                 {
-                    instance = new OyContext();
+                    instance = new ContextHelper();
                 }
                 return instance;
             }

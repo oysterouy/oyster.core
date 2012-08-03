@@ -3,7 +3,7 @@ using NUnit.Framework.Constraints;
 using System.Collections;
 using System.ComponentModel;
 
-namespace System
+namespace Oyster.Core.Orm
 {
     /// <summary>
     /// 在实际代码中使用时，应加入如下判断

@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Security.Cryptography;
-using System.Reflection;
-using Oyster.Core.Orm;
 using System.Text.RegularExpressions;
-using System.Web;
+using Oyster.Core.Orm;
+using System.Reflection;
+using System.Security.Cryptography;
 
-namespace Oyster.Core.Tool
+
+namespace Oyster.Core.Common
 {
-    public class OyTools
+    public class Helper
     {
         /// <summary>
         /// Pasca 命名法
@@ -56,7 +55,7 @@ namespace Oyster.Core.Tool
 
             outputBye = m5.ComputeHash(inputBye);
 
-            retStr = System.BitConverter.ToString(outputBye);
+            retStr = BitConverter.ToString(outputBye);
             retStr = retStr.Replace("-", "").ToUpper();
             return retStr;
         }

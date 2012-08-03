@@ -4,51 +4,54 @@ using System.Linq;
 using System.Text;
 using Oyster.Core.Db;
 using System.Data;
+using Oyster.Core.Common;
+
 
 namespace Oyster.Core.Orm
 {
-    public class ModelEngineDb : IModelEngine
+    public class ModelDbEngine : IModelEngine
     {
-
-        protected static ModelEngineDb _instance;
-
-        public static ModelEngineDb Instance
+        public Imodel GetById(Imodel mode, long Mid)
         {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new ModelEngineDb();
-                }
-                return _instance;
-            }
-        }
-
-        public IModel GetById(IModel mode, long Mid)
-        {
-            var dic = FilterWithId(mode, new OyCondition("Id", Mid), null, null);
+            var dic = FilterWithId(mode, new Condition("Id", Mid), null, null);
             if (dic != null && dic.ContainsKey(Mid))
             {
-                return dic[Mid] as IModel;
+                return dic[Mid] as Imodel;
             }
             return null;
         }
 
-        public IList<IModel> Filter(IModel m, OyCondition condition, MPager mp = null, OyOrderBy orderby = null)
+        public IDictionary<long, Imodel> GetByIds(Imodel mode, IList<long> Mids)
         {
-            List<IModel> ms = new List<IModel>();
-            var dic = FilterWithId(m, condition, mp, orderby);
-            if (dic != null)
+            var dic = FilterWithId(mode, new Condition("Id", ConditionOperator.In, Mids), null, null);
+            if (dic != null && dic.Count > 0)
             {
-                foreach (var d in dic.Values)
-                {
-                    ms.Add(d as IModel);
-                }
+                return dic;
             }
-            return ms;
+            return null;
         }
 
-        public IDictionary<long, object> FilterWithId(IModel m, OyCondition condition, MPager mp = null, OyOrderBy orderby = null)
+        public IDictionary<long, Imodel> GetByOpGuid(Imodel mode, string guid)
+        {
+            var dic = FilterWithId(mode, new Condition("OpGuid", guid), null, null);
+            if (dic != null && dic.Count > 0)
+            {
+                return dic;
+            }
+            return null;
+        }
+
+        public IList<Imodel> Filter(Imodel m, Condition condition, Mpager mp = null, OrderBy orderby = null)
+        {
+            var dic = FilterWithId(m, condition, mp, orderby);
+            if (dic != null && dic.Count > 0)
+            {
+                return dic.Values.ToList();
+            }
+            return null;
+        }
+
+        public IDictionary<long, Imodel> FilterWithId(Imodel m, Condition condition, Mpager mp = null, OrderBy orderby = null)
         {
             if (m == null)
             {
@@ -58,7 +61,7 @@ namespace Oyster.Core.Orm
             var dicols = MReflection.GetModelColumns(m);
             string columns = string.Join(",", dicols.Values);
 
-            var plist = new ParameterCollection();
+            var plist = Db.DbEngine.NewParameters();
             string condstr = condition.ToString(m, plist);
             string orderbystr = orderby == null ? "" : orderby.ToString(m);
             string sql = string.Format(sqlexp, new string[] { columns, m.zTableName, condstr, orderbystr });
@@ -73,18 +76,26 @@ namespace Oyster.Core.Orm
             if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
             {
                 var dic = BindDataByTableWithId(m.zModelType, ds.Tables[0]);
-                return dic;
+                if (dic != null && dic.Count > 0)
+                {
+                    Dictionary<long, Imodel> ddd = new Dictionary<long, Imodel>();
+                    foreach (var d in dic.Keys)
+                    {
+                        ddd.Add(d, dic[d] as Imodel);
+                    }
+                    return ddd;
+                }
             }
-            return new Dictionary<long, object>();
+            return new Dictionary<long, Imodel>();
         }
 
-        public int Update(IModel mode, OyValue val, OyCondition condition)
+        public int Update(Imodel mode, ValuePair val, Condition condition)
         {
             string op = "";
             return Update(mode, val, condition, out op);
         }
 
-        public int Update(IModel mode, OyValue val, OyCondition condition, out string opguid)
+        public int Update(Imodel mode, ValuePair val, Condition condition, out string opguid)
         {
             var parms = new ParameterCollection();
             opguid = Guid.NewGuid().ToString();
@@ -105,7 +116,7 @@ namespace Oyster.Core.Orm
             return 0;
         }
 
-        public string Insert(IModel m)
+        public string Insert(Imodel m)
         {
             var ps = MReflection.GetMReflections(m.zModelType);
             var diccols = MReflection.GetModelColumns(m);
@@ -170,11 +181,23 @@ namespace Oyster.Core.Orm
             }
             return null;
         }
+        int _level = 0;
+        public int Level
+        {
+            get
+            {
+                return _level;
+            }
+            set
+            {
+                _level = 0;
+            }
+        }
 
         #region BindData
 
 
-        public object BindDataByRow(IModel m, DataRow dr)
+        public object BindDataByRow(Imodel m, DataRow dr)
         {
             try
             {
@@ -194,7 +217,7 @@ namespace Oyster.Core.Orm
                             if (mr != null)
                             {
                                 object data = dr[dicols[p]].ChangeType(mr.PType);
-                                data = data.Equals(System.DBNull.Value) ? null : data;
+                                data = data.Equals(DBNull.Value) ? null : data;
                                 if (data != null)
                                 {
                                     mr.SetValue(m, data);
@@ -206,7 +229,7 @@ namespace Oyster.Core.Orm
             }
             catch (Exception ex)
             {
-                //TODO LOG
+                Logger.Logger.Error("BindDataByRow:" + m.zTableName, ex);
             }
             return m;
         }
@@ -226,7 +249,7 @@ namespace Oyster.Core.Orm
                 {
                     foreach (DataRow dr in dt.Rows)
                     {
-                        var tm = Activator.CreateInstance(type) as IModel;
+                        var tm = Activator.CreateInstance(type) as Imodel;
                         if (tm != null)
                         {
                             var d = BindDataByRow(tm, dr);
@@ -246,6 +269,7 @@ namespace Oyster.Core.Orm
             }
             catch (Exception ex)
             {
+                Logger.Logger.Error("BindDataByTableWithId:" + type.FullName, ex);
             }
             return dic;
         }

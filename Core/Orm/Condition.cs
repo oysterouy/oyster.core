@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Oyster.Core.Common;
 
-namespace System
+namespace Oyster.Core.Orm
 {
-    public partial class OyCondition
+    public partial class Condition
     {
         public string Name;
         public object Value;
@@ -13,8 +14,8 @@ namespace System
         public string Expression;
 
         public ConditionOperator Op = ConditionOperator.Equal;
-        public OyCondition Left;
-        public OyCondition Right;
+        public Condition Left;
+        public Condition Right;
 
         public ConditionOperator MulOperate;
 
@@ -27,23 +28,23 @@ namespace System
         }
 
 
-        public OyCondition(string name, object value)
+        public Condition(string name, object value)
             : this(name, ConditionOperator.Equal, value)
         {
         }
-        public OyCondition(bool isexp, string expression, string name = "")
+        public Condition(bool isexp, string expression, string name = "")
         {
             Expression = expression;
             Name = name;
         }
-        public OyCondition(string name, ConditionOperator op, object value)
+        public Condition(string name, ConditionOperator op, object value)
         {
             Name = name;
             Value = value;
             Op = op;
         }
 
-        public OyCondition(OyCondition left, ConditionOperator op, OyCondition right)
+        public Condition(Condition left, ConditionOperator op, Condition right)
         {
             if (op == ConditionOperator.And
                 || op == ConditionOperator.Or)
@@ -58,14 +59,14 @@ namespace System
             }
         }
 
-        public static OyCondition operator |(OyCondition left, OyCondition right)
+        public static Condition operator |(Condition left, Condition right)
         {
-            return new OyCondition(left, ConditionOperator.Or, right);
+            return new Condition(left, ConditionOperator.Or, right);
         }
 
-        public static OyCondition operator &(OyCondition left, OyCondition right)
+        public static Condition operator &(Condition left, Condition right)
         {
-            return new OyCondition(left, ConditionOperator.And, right);
+            return new Condition(left, ConditionOperator.And, right);
         }
     }
 }

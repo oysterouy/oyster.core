@@ -2,33 +2,34 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Oyster.Core.Orm;
 
-namespace System
+namespace Oyster.Core.Orm
 {
-    public class OyOrderBy
+    public class OrderBy
     {
         public string Name;
         public bool Desc = true;
-        public OyOrderBy Right;
-        public OyOrderBy(string name, bool isdesc = true, OyOrderBy right = null)
+        public OrderBy Right;
+        public OrderBy(string name, bool isdesc = true, OrderBy right = null)
         {
             Name = name;
             Desc = isdesc;
             Right = right;
         }
-        public static OyOrderBy operator &(OyOrderBy left, OyOrderBy right)
+        public static OrderBy operator &(OrderBy left, OrderBy right)
         {
             left.Right = right;
             return left;
         }
 
-        public string ToString(IModel m)
+        public string ToString(Imodel m)
         {
             StringBuilder sb = new StringBuilder();
-            var ps = Oyster.Core.Orm.MReflection.GetModelColumns(m);
+            var ps = MReflection.GetModelColumns(m);
             if (ps != null)
             {
-                OyOrderBy odby = this;
+                OrderBy odby = this;
                 do
                 {
                     string nm = odby.Name;

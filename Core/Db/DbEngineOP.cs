@@ -21,14 +21,14 @@ namespace Oyster.Core.Db
             {
                 var ocmd = NewCommand();
                 ocmd.CommandText = sql;
-                ocmd.CommandType = System.Data.CommandType.Text;
+                ocmd.CommandType = CommandType.Text;
                 Open();
                 rtvalue = ocmd.ExecuteNonQuery();
             }
             catch (Exception ee)
             {
                 rtvalue = -1;
-                //错误处理
+                Logger.Logger.Error(string.Format("DB:{0}", sql), ee);
             }
             finally { Close(); }
 
@@ -48,15 +48,15 @@ namespace Oyster.Core.Db
         /// 执行SQL语句，返回影响行数
         /// </summary>
         /// <returns></returns>
-        public virtual int ExecuteNonQuery(string sql, System.Data.IDataParameter param)
+        public virtual int ExecuteNonQuery(string sql, IDataParameter param)
         {
-            return ExecuteNonQuery(sql, new System.Data.IDataParameter[] { param });
+            return ExecuteNonQuery(sql, new IDataParameter[] { param });
         }
         /// <summary>
         /// 执行SQL语句，返回影响行数
         /// </summary>
         /// <returns></returns>
-        public virtual int ExecuteNonQuery(string sql, IList<System.Data.IDataParameter> paramters)
+        public virtual int ExecuteNonQuery(string sql, IList<IDataParameter> paramters)
         {
             int rtvalue = -1;
             try
@@ -68,7 +68,7 @@ namespace Oyster.Core.Db
             catch (Exception ee)
             {
                 rtvalue = -1;
-                //错误处理
+                Logger.Logger.Error(string.Format("DB:{0}", sql), ee);
             }
             finally { Close(); }
 
@@ -94,7 +94,7 @@ namespace Oyster.Core.Db
             catch (Exception ee)
             {
                 rtvalue = null;
-                //错误处理
+                Logger.Logger.Error(string.Format("DB:{0}", sql), ee);
             }
             finally { Close(); }
 
@@ -114,15 +114,15 @@ namespace Oyster.Core.Db
         /// 执行SQL语句，返回查询数据
         /// </summary>
         /// <returns></returns>
-        public virtual object ExecuteScalar(string sql, System.Data.IDataParameter param)
+        public virtual object ExecuteScalar(string sql, IDataParameter param)
         {
-            return ExecuteScalar(sql, new System.Data.IDataParameter[] { param });
+            return ExecuteScalar(sql, new IDataParameter[] { param });
         }
         /// <summary>
         /// 执行SQL语句，返回查询数据
         /// </summary>
         /// <returns></returns>
-        public virtual object ExecuteScalar(string sql, IList<System.Data.IDataParameter> paramters)
+        public virtual object ExecuteScalar(string sql, IList<IDataParameter> paramters)
         {
             object rtvalue = null;
             try
@@ -134,7 +134,7 @@ namespace Oyster.Core.Db
             catch (Exception ee)
             {
                 rtvalue = null;
-                //错误处理
+                Logger.Logger.Error(string.Format("DB:{0}", sql), ee);
             }
             finally { Close(); }
 
@@ -148,9 +148,9 @@ namespace Oyster.Core.Db
         /// 执行SQL语句，返回查询数据
         /// </summary>
         /// <returns></returns>
-        public virtual System.Data.IDataReader ExecuteReader(string sql)
+        public virtual IDataReader ExecuteReader(string sql)
         {
-            System.Data.IDataReader rtvalue = null;
+            IDataReader rtvalue = null;
             try
             {
                 var ocmd = NewCommand(sql);
@@ -160,7 +160,7 @@ namespace Oyster.Core.Db
             catch (Exception ee)
             {
                 rtvalue = null;
-                //错误处理
+                Logger.Logger.Error(string.Format("DB:{0}", sql), ee);
             }
             finally
             {
@@ -169,21 +169,21 @@ namespace Oyster.Core.Db
             return rtvalue;
         }
 
-        public virtual System.Data.IDataReader ExecuteReader(string sql, string[] args)
+        public virtual IDataReader ExecuteReader(string sql, string[] args)
         {
             StringBuilder sbder = new StringBuilder();
             sbder.AppendFormat(sql, args);
             return ExecuteReader(sbder.ToString());
         }
 
-        public virtual System.Data.IDataReader ExecuteReader(string sql, System.Data.IDataParameter param)
+        public virtual IDataReader ExecuteReader(string sql, IDataParameter param)
         {
-            return ExecuteReader(sql, new System.Data.IDataParameter[] { param });
+            return ExecuteReader(sql, new IDataParameter[] { param });
         }
 
-        public virtual System.Data.IDataReader ExecuteReader(string sql, IList<System.Data.IDataParameter> paramters)
+        public virtual IDataReader ExecuteReader(string sql, IList<IDataParameter> paramters)
         {
-            System.Data.IDataReader rtvalue = null;
+            IDataReader rtvalue = null;
             try
             {
                 var ocmd = NewCommand(sql, paramters);
@@ -193,7 +193,7 @@ namespace Oyster.Core.Db
             catch (Exception ee)
             {
                 rtvalue = null;
-                //错误处理
+                Logger.Logger.Error(string.Format("DB:{0}", sql), ee);
             }
             finally
             {
@@ -229,9 +229,9 @@ namespace Oyster.Core.Db
         /// 执行SQL语句，返回查询数据
         /// </summary>
         /// <returns></returns>
-        public virtual System.Data.DataSet ExecuteQuery(string sql)
+        public virtual DataSet ExecuteQuery(string sql)
         {
-            System.Data.DataSet rtvalue = new System.Data.DataSet();
+            DataSet rtvalue = new DataSet();
             try
             {
                 var adapter = NewDataAdapter(sql);
@@ -241,7 +241,7 @@ namespace Oyster.Core.Db
             catch (Exception ee)
             {
                 rtvalue = null;
-                //错误处理
+                Logger.Logger.Error(string.Format("DB:{0}", sql), ee);
             }
             finally { Close(); }
 
@@ -251,7 +251,7 @@ namespace Oyster.Core.Db
         /// 执行SQL语句，返回查询数据
         /// </summary>
         /// <returns></returns>
-        public virtual System.Data.DataSet ExecuteQuery(string sql, string[] args)
+        public virtual DataSet ExecuteQuery(string sql, string[] args)
         {
             StringBuilder sbder = new StringBuilder();
             sbder.AppendFormat(sql, args);
@@ -261,17 +261,17 @@ namespace Oyster.Core.Db
         /// 执行SQL语句，返回查询数据
         /// </summary>
         /// <returns></returns>
-        public virtual System.Data.DataSet ExecuteQuery(string sql, System.Data.IDataParameter param)
+        public virtual DataSet ExecuteQuery(string sql, IDataParameter param)
         {
-            return ExecuteQuery(sql, new System.Data.IDataParameter[] { param });
+            return ExecuteQuery(sql, new IDataParameter[] { param });
         }
         /// <summary>
         /// 执行SQL语句，返回查询数据
         /// </summary>
         /// <returns></returns>
-        public virtual System.Data.DataSet ExecuteQuery(string sql, IList<System.Data.IDataParameter> paramters)
+        public virtual DataSet ExecuteQuery(string sql, IList<IDataParameter> paramters)
         {
-            System.Data.DataSet rtvalue = new System.Data.DataSet();
+            DataSet rtvalue = new DataSet();
             try
             {
                 var adapter = NewDataAdapter(sql, paramters);
@@ -281,7 +281,7 @@ namespace Oyster.Core.Db
             catch (Exception ee)
             {
                 rtvalue = null;
-                //错误处理
+                Logger.Logger.Error(string.Format("DB:{0}", sql), ee);
             }
             finally { Close(); }
 
@@ -291,7 +291,7 @@ namespace Oyster.Core.Db
         /// 执行SQL语句，返回查询数据
         /// </summary>
         /// <returns></returns>
-        public virtual System.Data.DataSet ExecuteQuery(string sql, int pageindex, int pagesize, out int rowscount)
+        public virtual DataSet ExecuteQuery(string sql, int pageindex, int pagesize, out int rowscount)
         {
             return ExecuteQuery(GetPagerSql(sql, pageindex, pagesize, out rowscount));
         }
@@ -299,7 +299,7 @@ namespace Oyster.Core.Db
         /// 执行SQL语句，返回查询数据
         /// </summary>
         /// <returns></returns>
-        public virtual System.Data.DataSet ExecuteQuery(string sql, string[] args, int pageindex, int pagesize, out int rowscount)
+        public virtual DataSet ExecuteQuery(string sql, string[] args, int pageindex, int pagesize, out int rowscount)
         {
             return ExecuteQuery(GetPagerSql(sql, pageindex, pagesize, out rowscount), args);
         }
@@ -307,7 +307,7 @@ namespace Oyster.Core.Db
         /// 执行SQL语句，返回查询数据
         /// </summary>
         /// <returns></returns>
-        public virtual System.Data.DataSet ExecuteQuery(string sql, System.Data.IDataParameter param, int pageindex, int pagesize, out int rowscount)
+        public virtual DataSet ExecuteQuery(string sql, IDataParameter param, int pageindex, int pagesize, out int rowscount)
         {
             return ExecuteQuery(GetPagerSql(sql, pageindex, pagesize, out rowscount), param);
         }
@@ -315,7 +315,7 @@ namespace Oyster.Core.Db
         /// 执行SQL语句，返回查询数据
         /// </summary>
         /// <returns></returns>
-        public virtual System.Data.DataSet ExecuteQuery(string sql, IList<System.Data.IDataParameter> paramters, int pageindex, int pagesize, out int rowscount)
+        public virtual DataSet ExecuteQuery(string sql, IList<IDataParameter> paramters, int pageindex, int pagesize, out int rowscount)
         {
             return ExecuteQuery(GetPagerSql(sql, pageindex, pagesize, out rowscount), paramters);
         }
@@ -360,7 +360,7 @@ namespace Oyster.Core.Db
             catch (Exception ee)
             {
                 rtvalue = null;
-                //错误处理
+                Logger.Logger.Error(string.Format("DB:{0}", sql), ee);
             }
             finally { }
             return rtvalue;
@@ -402,7 +402,7 @@ namespace Oyster.Core.Db
             catch (Exception ee)
             {
                 rtvalue = null;
-                //错误处理
+                Logger.Logger.Error(string.Format("DB:{0}", sql), ee);
             }
             finally { }
             return rtvalue;

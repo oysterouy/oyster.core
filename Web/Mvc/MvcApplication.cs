@@ -10,7 +10,7 @@ using System.Dynamic;
 using System.Linq.Expressions;
 using System.Reflection;
 using Oyster.Web.Mvc.Config;
-using Oyster.Core.Tool;
+using Oyster.Core.Common;
 
 namespace Oyster.Web.Mvc
 {
@@ -53,7 +53,7 @@ namespace Oyster.Web.Mvc
                             }
 
                             string val = tp.FullName + "." + mname;
-                            var nm = OyTools.GetNameDesc(m);
+                            var nm = Helper.GetNameDesc(m);
                             if (!ActionList.ContainsKey(val))
                             {
                                 ActionList.Add(val, nm == null ? new NameDesc(val) : nm);

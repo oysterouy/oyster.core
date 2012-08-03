@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 using System.Web.Mvc;
-using Oyster.Core.Tool;
+using Oyster.Core.Common;
 using System.Web.Routing;
 using System.Text.RegularExpressions;
 

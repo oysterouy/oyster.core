@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace System
+namespace Oyster.Core.Orm
 {
     /// <summary>
     /// 使用本框架的Model层，建议使用CodeSmith自动生成，示例：
@@ -45,33 +45,9 @@ namespace System
     /// 在使用OyCondtion,OyValue,等时传递的第一个参数为属性或字段名，如： new OyCondition(User.iD,1);
     /// 
     /// </summary>
-    public interface IModel
+    public interface Imodel
     {
         Type zModelType { get; }
         string zTableName { get; }
-    }
-
-    public class MPager
-    {
-        public int PageIndex = 1;
-        public int PageSize = 20;
-        public int TotalCount = 0;
-        public int PageCount
-        {
-            get
-            {
-                if (TotalCount % PageSize > 0)
-                {
-                    return TotalCount / PageSize + 1;
-                }
-                return TotalCount / PageSize;
-            }
-        }
-
-        public override string ToString()
-        {
-            return string.Format("this page index is {0},pagesize is {1}."
-                , new string[] { PageIndex.ToString(), PageSize.ToString() });
-        }
     }
 }

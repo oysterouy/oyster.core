@@ -39,16 +39,7 @@ namespace Oyster.Core
             _instance = instance;
             return Instance;
         }
-        /// <summary>
-        /// 查询缓存时间 0.2 秒，默认保证当前页面请求不重复读取数据
-        /// </summary>
-        public virtual int CacheFilter
-        {
-            get
-            {
-                return 200;
-            }
-        }
+
         /// <summary>
         /// 数据库连接断开时间 秒
         /// </summary>
@@ -58,13 +49,6 @@ namespace Oyster.Core
             {
                 return 10;
             }
-        }
-        /// <summary>
-        /// 数据实例默认缓存0.2秒，同一应用程序的缓存实例会被更新数据库操作更新
-        /// </summary>
-        public double ModelCacheTime
-        {
-            get { return 200; }
         }
     }
 }

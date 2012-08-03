@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Oyster.Core.Tool;
+using Oyster.Core.Common;
 
 namespace Oyster.Core.Cache
 {
     /// <summary>
     /// 需要定义缓存引擎执行顺序的需要继承本类,重载Init方法
+    /// 默认已添加DotNetCache，如需替换，请支持Instance.ClearEngine后重新添加
     /// </summary>
     public class CacheEngine : ICache
     {
@@ -47,6 +48,12 @@ namespace Oyster.Core.Cache
             return _cacheEngine.Count - 1;
         }
 
+        public void ClearEngine()
+        {
+            _cacheEngine.Clear();
+        }
+
+
         public void Set(string k, CacheEntry v)
         {
             foreach (var c in _cacheEngine)
@@ -58,39 +65,14 @@ namespace Oyster.Core.Cache
         public CacheEntry Get(string k)
         {
             string key = k;
-            if (k.StartsWith("Model-"))
+
+            CacheEntry ce = null;
+            foreach (var c in _cacheEngine)
             {
-                string[] ks = k.Split(new char[] { '-', ':' }, StringSplitOptions.RemoveEmptyEntries);
-                if (ks.Length > 2)
+                ce = c.Get(k);
+                if (ce != null)
                 {
-                    key = "Model-" + ks[1];
-                }
-                CacheEntry ce = null;
-                foreach (var c in _cacheEngine)
-                {
-                    ce = c.Get(key);
-                    if (ce != null && ce.Value is ModelCacheEntry)
-                    {
-                        ModelCacheEntry me = ce.Value as ModelCacheEntry;
-                        var mce = me.Get(k);
-                        if (mce != null)
-                        {
-                            return mce;
-                        }
-                    }
                     return ce;
-                }
-            }
-            else
-            {
-                CacheEntry ce = null;
-                foreach (var c in _cacheEngine)
-                {
-                    ce = c.Get(k);
-                    if (ce != null)
-                    {
-                        return ce;
-                    }
                 }
             }
             return null;
@@ -108,25 +90,6 @@ namespace Oyster.Core.Cache
 
         public string SetValue(string key, object value, TimeSpan tspan = default(TimeSpan), TimeSpan lasttouchspan = default(TimeSpan))
         {
-            if (value is IModel)
-            {
-                IModel mode = value as IModel;
-                lock (mode.zModelType)
-                {
-                    string k = string.Format("Model-{0}", mode.zModelType.FullName);
-                    ModelCacheEntry me = GetValue(k) as ModelCacheEntry;
-                    if (me == null)
-                    {
-                        me = new ModelCacheEntry(mode.zModelType);
-                    }
-                    string kme = me.SetValue(mode, tspan, lasttouchspan);
-                    foreach (var c in _cacheEngine)
-                    {
-                        c.Set(key, new CacheEntry(c, k, me));
-                    }
-                    return kme;
-                }
-            }
             foreach (var c in _cacheEngine)
             {
                 c.Set(key, new CacheEntry(c, key, value, tspan, lasttouchspan));
@@ -156,7 +119,7 @@ namespace Oyster.Core.Cache
         {
             get
             {
-                object tout = OyContext.Instance.GetContextByKey("CacheEngine.CurrentTimeOut");
+                object tout = ContextHelper.Instance.GetContextByKey("CacheEngine.CurrentTimeOut");
                 if (tout != null && tout is Double)
                 {
                     return (double)tout;
@@ -165,7 +128,7 @@ namespace Oyster.Core.Cache
             }
             set
             {
-                OyContext.Instance.SetContextByKey("CacheEngine.CurrentTimeOut", value);
+                ContextHelper.Instance.SetContextByKey("CacheEngine.CurrentTimeOut", value);
             }
         }
 

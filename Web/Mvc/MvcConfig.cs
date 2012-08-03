@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Xml;
 using System.Web.Mvc;
-using System.Dynamic;
-using System.Linq.Expressions;
-using Oyster.Core.Tool;
+using Oyster.Core.Common;
+
 
 namespace Oyster.Web.Mvc
 {
@@ -247,11 +244,11 @@ namespace Oyster.Web.Mvc
         /// <returns></returns>
         public string GetHost(string type = "content")
         {
-            var hc = OyContext.Instance.GetContext<HostCount>() as HostCount;
+            var hc = ContextHelper.Instance.GetContext<HostCount>() as HostCount;
             if (hc == null)
             {
                 hc = new HostCount(this);
-                OyContext.Instance.SetContext<HostCount>(hc);
+                ContextHelper.Instance.SetContext<HostCount>(hc);
             }
             return hc.GetHost(type);
         }

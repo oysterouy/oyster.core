@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Oyster.Core.Tool
+namespace Oyster.Core.Common
 {
     public class InstanceHelper
     {

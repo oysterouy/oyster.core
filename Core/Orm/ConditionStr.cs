@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Collections;
-using Oyster.Core.Db;
 using Oyster.Core.Orm;
+using Oyster.Core.Db;
+using Oyster.Core.Common;
 
-namespace System
+namespace Oyster.Core.Orm
 {
-    public partial class OyCondition
+    public partial class Condition
     {
-        public string ToString(IModel mode)
+        public string ToString(Imodel mode)
         {
             if (mode == null)
             {
@@ -18,7 +19,7 @@ namespace System
             }
             string retstr = "";
             string exp = "({0} {1} {2})";
-            OyCondition condition = this;
+            Condition condition = this;
             if (condition.IsMulCondition)
             {
                 string left = "";
@@ -225,7 +226,7 @@ namespace System
             return retstr;
         }
 
-        public string ToString(IModel mode, ParameterCollection paramlist)
+        public string ToString(Imodel mode, ParameterCollection paramlist)
         {
             paramlist = paramlist == null ? new ParameterCollection() : paramlist;
             if (mode == null)
@@ -234,7 +235,7 @@ namespace System
             }
             string retstr = "";
             string exp = "({0} {1} {2})";
-            OyCondition condition = this;
+            Condition condition = this;
             if (condition.IsMulCondition)
             {
                 string left = "";
@@ -348,14 +349,14 @@ namespace System
             return retstr;
         }
 
-        public bool IsMatch(IModel mode)
+        public bool IsMatch(Imodel mode)
         {
             bool match = false;
             if (mode == null)
             {
                 throw new Exception("IModel mode can not be null!");
             }
-            OyCondition condition = this;
+            Condition condition = this;
             if (condition.IsMulCondition)
             {
                 bool lm = false, rm = false;

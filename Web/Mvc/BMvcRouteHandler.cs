@@ -6,7 +6,7 @@ using System.Text;
 using System.Web.Mvc;
 using System.Text.RegularExpressions;
 using System.Web;
-using Oyster.Core.Tool;
+using Oyster.Core.Common;
 
 namespace Oyster.Web.Mvc
 {

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using System.Diagnostics;
 using System.Reflection;
-using System.Dynamic;
-using System.Collections;
-using Oyster.Core.Tool;
+using Oyster.Core.Orm;
+using Oyster.Core.Comm;
+
 
 namespace Oyster.Web.Mvc
 {

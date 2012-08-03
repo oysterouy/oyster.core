@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections;
+using Oyster.Core.Orm;
 
 namespace System
 {
-    public static class OyExtends
+    public static partial class Extends
     {
         #region 验证
 
@@ -479,20 +477,6 @@ namespace System
         }
 
         #endregion
-        
-        #region Model扩展
-        /// <summary>
-        /// 插入数据模型实例
-        /// </summary>
-        /// <param name="mode"></param>
-        /// <param name="jdb">True只插入DATABASE，false 只插入缓存</param>
-        /// <returns></returns>
-        public static string Insert(this IModel mode, bool jdb)
-        {
-            return OyEngine.M.Insert(mode, jdb);
-        }
-
-        #endregion
 
         #region Common 扩展
 
@@ -514,7 +498,7 @@ namespace System
                 return ToJson(mode as IEnumerable);
             }
             string ret = "{}";
-            var mr = Oyster.Core.Orm.MReflection.GetMReflections(mode.GetType());
+            var mr = MReflection.GetMReflections(mode.GetType());
             if (mr != null && mr.Count > 0)
             {
                 StringBuilder skv = new StringBuilder();

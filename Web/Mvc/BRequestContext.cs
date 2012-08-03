@@ -7,7 +7,8 @@ using System.Web;
 using System.Web.Routing;
 using System.Reflection;
 using System.Dynamic;
-using Oyster.Core.Tool;
+using Oyster.Core.Common;
+
 
 namespace Oyster.Web.Mvc
 {
@@ -41,8 +42,8 @@ namespace Oyster.Web.Mvc
                 t = new BRequestContext(context);
             }
 
-            
-            OyContext.Instance.SetContext<BRequestContext>(t);
+
+            ContextHelper.Instance.SetContext<BRequestContext>(t);
 
             return t;
         }
@@ -76,7 +77,7 @@ namespace Oyster.Web.Mvc
         {
             get
             {
-                var v = OyContext.Instance.GetContext<BRequestContext>();
+                var v = ContextHelper.Instance.GetContext<BRequestContext>();
                 return v as BRequestContext;
             }
         }

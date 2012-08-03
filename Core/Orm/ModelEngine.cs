@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
 
 namespace Oyster.Core.Orm
 {
-    public class ModelEngine : IModelEngine
+    /// <summary>
+    /// 数据库模型操作引擎
+    /// 默认添加了（ModelDbEngine,ModelCacheEngine) 如需替换，请使用ClearDbEngine(),ClearCacheEngine()
+    /// </summary>
+    public class ModelEngine
     {
         protected IList<IModelEngine> _modelEngine;
+        protected IList<IModelCacheEngine> _modelCacheEngine;
         protected ModelEngine()
         {
             Init();
@@ -15,8 +20,9 @@ namespace Oyster.Core.Orm
         protected virtual void Init()
         {
             _modelEngine = new List<IModelEngine>();
-            _modelEngine.Add(ModelEngineCache.Instance);
-            _modelEngine.Add(ModelEngineDb.Instance);
+            _modelCacheEngine = new List<IModelCacheEngine>();
+
+            _modelEngine.Add(new ModelDbEngine());
         }
 
         protected static ModelEngine _instance;
@@ -32,185 +38,315 @@ namespace Oyster.Core.Orm
             }
         }
 
-        /// <summary>
-        /// 添加缓存引擎到引擎适配器
-        /// </summary>
-        /// <param name="cacher"></param>
-        /// <returns></returns>
-        public virtual int AddEngine(IModelEngine engine)
+        private void UpdateCacheByOpGuid(Imodel mode, string opguid)
         {
-            _modelEngine.Add(engine);
-            return _modelEngine.Count - 1;
-        }
-
-        public IModel GetById(IModel mode, long Mid)
-        {
-            IModel md = null;
-            List<IModelEngine> upsetengine = new List<IModelEngine>();
+            IDictionary<long, Imodel> dic = null;
             foreach (var m in _modelEngine)
             {
-                if (OyTran.Current.IsTraning && !(m is ModelEngineDb))
-                {
-                    continue;
-                }
-                md = m.GetById(mode, Mid);
-                if (!(m is ModelEngineDb))
-                {
-                    upsetengine.Add(m);
-                }
-                if (md != null)
+                dic = m.FilterWithId(mode, new Condition("OpGuid", opguid));
+                if (dic != null && dic.Count > 0)
                 {
                     break;
                 }
             }
-            if (md != null)
+            if (dic != null && dic.Count > 0 && _modelCacheEngine.Count > 0)
             {
-                foreach (var mm in upsetengine)
+                foreach (long k in dic.Keys)
                 {
-                    mm.Insert(md);
+                    var m = _modelCacheEngine[0];
+                    m.Set(dic[k]);
                 }
             }
-            return md;
         }
 
-        public IList<IModel> Filter(IModel m, OyCondition condition, MPager mp = null, OyOrderBy orderby = null)
+        /// <summary>
+        /// 添加模型引擎到引擎适配器
+        /// </summary>
+        /// <param name="cacher"></param>
+        /// <returns></returns>
+        public virtual int AddDbEngine(IModelEngine engine)
         {
-            var dic = FilterWithId(m, condition, mp, orderby);
-            IList<IModel> ls = new List<IModel>();
-            if (dic != null && dic.Count > 0)
+            int idx = -1;
+            for (int i = 0; i < _modelEngine.Count; i++)
             {
-                foreach (var v in dic.Values)
+                var m = _modelEngine[i];
+                if (m.Level < engine.Level)
                 {
-                    ls.Add(v as IModel);
+                    idx = i;
+                    _modelEngine.Insert(idx, engine);
                 }
             }
-            return ls.Count > 0 ? ls : null;
+            if (idx < 0)
+            {
+                _modelEngine.Add(engine);
+            }
+
+            return idx;
         }
 
-        public IDictionary<long, object> FilterWithId(IModel m, OyCondition condition, MPager mp = null, OyOrderBy orderby = null)
+        public void ClearDbEngine()
         {
-            ModelEngineCache mcache = null;
-            foreach (var engin in _modelEngine)
+            _modelEngine.Clear();
+        }
+
+        /// <summary>
+        /// 添加模型缓存引擎到引擎适配器
+        /// </summary>
+        /// <param name="cacher"></param>
+        /// <returns></returns>
+        public virtual int AddCacheEngine(IModelCacheEngine engine)
+        {
+            int idx = -1;
+            for (int i = 0; i < _modelCacheEngine.Count; i++)
             {
-                if (OyTran.Current.IsTraning && !(engin is ModelEngineDb))
+                var m = _modelCacheEngine[i];
+                if (m.Level < engine.Level)
                 {
-                    continue;
+                    idx = i;
+                    _modelCacheEngine.Insert(idx, engine);
                 }
-                if (engin is ModelEngineCache)
+            }
+            if (idx < 0)
+            {
+                _modelCacheEngine.Add(engine);
+            }
+
+            return idx;
+        }
+
+        public void ClearCacheEngine()
+        {
+            _modelCacheEngine.Clear();
+        }
+
+        #region modelengine
+
+
+        public virtual Imodel GetById(Imodel mode, long Mid)
+        {
+            var ls = GetByIds(mode, new long[] { Mid });
+            if (ls != null && ls.Count > 0)
+            {
+                return ls[0];
+            }
+            return null;
+        }
+
+        public virtual IDictionary<long, Imodel> GetByIds(Imodel mode, IList<long> Mids)
+        {
+            var dics = new Dictionary<long, Imodel>();
+            List<long> nocahceids = new List<long>();
+            nocahceids.AddRange(Mids);
+            foreach (var m in _modelCacheEngine)
+            {
+                var dic = m.GetByIds(mode, nocahceids);
+                if (dic != null && dic.Count > 0)
                 {
-                    mcache = engin as ModelEngineCache;
-                }
-                var data = engin.FilterWithId(m, condition, mp, orderby);
-                if (data != null)
-                {
-                    if (mcache != null && mcache != engin && data.Count > 0)
+                    foreach (var id in dic.Keys)
                     {
-                        mcache.SetFilterWithId(m, data, condition, mp, orderby);
+                        if (dic[id] != null)
+                        {
+                            nocahceids.Remove(id);
+                            dics.Add(id, dic[id]);
+                        }
                     }
-                    return data;
+                }
+                if (nocahceids.Count < 1)
+                {
+                    break;
+                }
+            }
+            if (nocahceids.Count > 0)
+            {
+
+            }
+
+            return null;
+        }
+        public virtual IDictionary<long, Imodel> GetByIdsFromDb(Imodel mode, IList<long> Mids)
+        {
+            var dics = new Dictionary<long, Imodel>();
+            List<long> nocahceids = new List<long>();
+            nocahceids.AddRange(Mids);
+            foreach (var m in _modelEngine)
+            {
+                var dic = m.GetByIds(mode, nocahceids);
+                if (dic != null && dic.Count > 0)
+                {
+                    foreach (var id in dic.Keys)
+                    {
+                        if (dic[id] != null)
+                        {
+                            nocahceids.Remove(id);
+                            dics.Add(id, dic[id]);
+                        }
+                    }
+                }
+                if (nocahceids.Count < 1)
+                {
+                    break;
+                }
+            }
+            //数据库引擎还取不到的ID就算了
+            return dics;
+        }
+
+        public virtual IDictionary<long, Imodel> GetByOpGuid(Imodel mode, string guid)
+        {
+            foreach (var m in _modelEngine)
+            {
+                var ls = m.GetByOpGuid(mode, guid);
+                if (ls != null && ls.Count > 0)
+                {
+                    return ls;
                 }
             }
             return null;
         }
 
-        public int Update(IModel mode, OyValue val, OyCondition condition)
+        public virtual IList<Imodel> Filter(Imodel mode, Condition condition, Mpager mp = null, OrderBy orderby = null)
         {
-            string s = null;
-            return Update(mode, val, condition, out s);
+            var dic = FilterWithId(mode, condition, mp, orderby);
+            if (dic != null && dic.Count > 0)
+            {
+                return dic.Values.ToList();
+            }
+            return null;
         }
 
-        public int Update(IModel mode, OyValue val, OyCondition condition, out string opguid)
+        public virtual IDictionary<long, Imodel> FilterWithId(Imodel mode, Condition condition, Mpager mp = null, OrderBy orderby = null)
         {
-            int t = 0, tt = 0;
-            opguid = "";
-            List<IModelEngine> mds = new List<IModelEngine>();
-            foreach (var engin in _modelEngine)
+            foreach (var m in _modelCacheEngine)
             {
-                if (OyTran.Current.IsTraning && !(engin is ModelEngineDb))
+                var dic = m.FilterWithId(mode, condition, mp, orderby);
+                if (dic != null && dic.Count > 0)
                 {
-                    mds.Add(engin);
-                    continue;
-                }
-                tt = engin.Update(mode, val, condition, out opguid);
-                if (tt > t)
-                {
-                    t = tt;
-                    if (mds.Count > 0)
-                    {
-                        foreach (var eg in mds)
-                        {
-                            eg.Update(mode, val, condition, out opguid);
-                        }
-                    }
+                    return dic;
                 }
             }
-            return t;
+
+            foreach (var m in _modelEngine)
+            {
+                var dic = m.FilterWithId(mode, condition, mp, orderby);
+                if (dic != null && dic.Count > 0)
+                {
+                    if (_modelCacheEngine.Count > 0)
+                    {
+                        _modelCacheEngine[0].SetFilterWithId(mode, dic, condition, mp, orderby);
+                    }
+                    return dic;
+                }
+            }
+            return null;
         }
 
-        /// <summary>
-        /// 插入除数据库以外的Model保存区
-        /// </summary>
-        /// <param name="mode"></param>
-        /// <returns></returns>
-        public string Insert(IModel mode)
+        public virtual int Update(Imodel mode, ValuePair val, Condition condition)
+        {
+            string op = "";
+            return Update(mode, val, condition, out op);
+        }
+
+        public virtual int Update(Imodel mode, ValuePair val, Condition condition, out string opguid)
+        {
+            opguid = "";
+            foreach (var m in _modelEngine)
+            {
+                int t = m.Update(mode, val, condition, out opguid);
+
+                if (!string.IsNullOrEmpty(opguid))
+                {
+                    UpdateCacheByOpGuid(mode, opguid);
+                }
+            }
+            return 0;
+        }
+
+        public string Insert(Imodel mode)
         {
             string opguid = "";
-            foreach (var engin in _modelEngine)
+            foreach (var m in _modelEngine)
             {
-                if (!(engin is ModelEngineDb))
+                opguid = m.Insert(mode);
+                if (!string.IsNullOrEmpty(opguid))
                 {
-                    opguid = engin.Insert(mode);
+                    UpdateCacheByOpGuid(mode, opguid);
                 }
             }
             return opguid;
         }
 
-        /// <summary>
-        /// this allways insert to db,not care param justdb
-        /// </summary>
-        /// <param name="mode"></param>
-        /// <param name="justdb"></param>
-        /// <returns></returns>
-        public string Insert(IModel mode, bool justdb)
+        #endregion
+
+        #region modeCacheEngine
+
+        public Imodel Get(Type type, long id)
         {
-            foreach (var engin in _modelEngine)
+            if (type == null || id < 1)
             {
-                if (engin is ModelEngineDb)
-                {
-                    return engin.Insert(mode);
-                }
+                return null;
             }
-            return null;
+
+            string cachekey = string.Format("{0}:{1}", type.FullName, id.ToString());
+            return Get(cachekey);
         }
-        /// <summary>
-        /// 插入数据库 然后返回插入的实例
-        /// </summary>
-        /// <param name="mode"></param>
-        /// <param name="needback"></param>
-        /// <returns></returns>
-        public IModel Insert(IModel mode, int needback)
+
+        public Imodel Get<T>(long id)
         {
-            string opguid = "";
-            ModelEngineDb dbengine = null;
-            foreach (var engin in _modelEngine)
+            return Get(typeof(T), id);
+        }
+
+        public Imodel Get(string cachekey)
+        {
+            Imodel mode = null;
+
+            if (_modelCacheEngine.Count > 0)
             {
-                if (engin is ModelEngineDb)
+                int i = 0;
+
+                for (i = 0; i < _modelCacheEngine.Count; i++)
                 {
-                    opguid = engin.Insert(mode);
-                    dbengine = engin as ModelEngineDb;
-                    break;
+                    var m = _modelCacheEngine[i];
+                    mode = m.Get(cachekey);
+                    if (mode != null)
+                    {
+                        break;
+                    }
                 }
-            }
-            if (!string.IsNullOrEmpty(opguid))
-            {
-                var ls = dbengine.Filter(mode, new OyCondition("OpGuid", opguid));
-                if (ls != null && ls.Count > 0)
+                if (i > 0)
                 {
-                    mode = ls[0];
-                    Insert(mode);
+                    _modelCacheEngine[0].Set(mode);
                 }
             }
             return mode;
         }
+
+        public string Set(string cachekey, Imodel mode)
+        {
+            if (_modelCacheEngine.Count > 0)
+            {
+                cachekey = _modelCacheEngine[0].Set(cachekey, mode);
+            }
+            return cachekey;
+        }
+
+        public string Set(Type type, Imodel mode)
+        {
+            var dic = MReflection.GetMReflections(mode.zModelType);
+            if (dic != null && dic.ContainsKey("Id"))
+            {
+                object id = dic["Id"].GetValue(mode);
+                string cachekey = string.Format("{0}:{1}", type.FullName, id.ToString());
+                return Set(cachekey, mode);
+            }
+            return null;
+        }
+
+        public string Set(Imodel mode)
+        {
+            return Set(mode.GetType(), mode);
+        }
+        #endregion
+
+
     }
 }

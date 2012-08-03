@@ -80,8 +80,6 @@
     </Compile>
     <Compile Include="Orm\OrderBy.cs" />
     <Compile Include="Orm\ValuePair.cs" />
-    <Compile Include="NUnit\OyAssert.cs" />
-    <Compile Include="NUnit\OyNUnit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="System\NickName.cs">
       <SubType>Code</SubType>

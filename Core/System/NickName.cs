@@ -12,11 +12,7 @@ namespace System
     {
 
     }
-   
-    public class OyAssert : Assert
-    {
 
-    }
     public class OyCondition : Oyster.Core.Orm.Condition
     {
         public OyCondition(bool isexp, string expression, string name = "")
@@ -46,6 +42,26 @@ namespace System
         {
         }
     }
+    public class OyValue : Oyster.Core.Orm.ValuePair
+    {
+        public OyValue(string name, object value)
+            : base(name, value)
+        {
+        }
+
+        public OyValue(bool isexp, string expression, string name = "")
+            : base(isexp, expression, name)
+        {
+        }
+    }
+
+    public class OyLogger : Oyster.Core.Logger.Logger
+    {
+
+    }
+
+    #region NUnit
+
     public class OyTestFixtureAttribute : TestFixtureAttribute
     {
 
@@ -55,7 +71,10 @@ namespace System
     {
 
     }
+    public class OyAssert : Assert
+    {
 
+    }
     public class OyNUniting : IDisposable
     {
         public OyNUniting()
@@ -75,21 +94,6 @@ namespace System
             }
         }
     }
-    public class OyValue : Oyster.Core.Orm.ValuePair
-    {
-        public OyValue(string name, object value)
-            : base(name, value)
-        {
-        }
 
-        public OyValue(bool isexp, string expression, string name = "")
-            : base(isexp, expression, name)
-        {
-        }
-    }
-
-    public class OyLogger : Oyster.Core.Logger.Logger
-    {
-
-    }
+    #endregion
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Oyster.Core.Orm
+namespace System
 {
     /// <summary>
     /// 使用本框架的Model层，建议使用CodeSmith自动生成，示例：
@@ -45,7 +45,7 @@ namespace Oyster.Core.Orm
     /// 在使用OyCondtion,OyValue,等时传递的第一个参数为属性或字段名，如： new OyCondition(User.iD,1);
     /// 
     /// </summary>
-    public interface Imodel
+    public interface IModel
     {
         Type zModelType { get; }
         string zTableName { get; }

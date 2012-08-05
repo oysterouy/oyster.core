@@ -38,9 +38,9 @@ namespace Oyster.Core.Orm
             }
         }
 
-        private void UpdateCacheByOpGuid(Imodel mode, string opguid)
+        private void UpdateCacheByOpGuid(IModel mode, string opguid)
         {
-            IDictionary<long, Imodel> dic = null;
+            IDictionary<long, IModel> dic = null;
             foreach (var m in _modelEngine)
             {
                 dic = m.FilterWithId(mode, new Condition("OpGuid", opguid));
@@ -122,7 +122,7 @@ namespace Oyster.Core.Orm
         #region modelengine
 
 
-        public virtual Imodel GetById(Imodel mode, long Mid)
+        public virtual IModel GetById(IModel mode, long Mid)
         {
             var ls = GetByIds(mode, new long[] { Mid });
             if (ls != null && ls.Count > 0)
@@ -132,9 +132,9 @@ namespace Oyster.Core.Orm
             return null;
         }
 
-        public virtual IDictionary<long, Imodel> GetByIds(Imodel mode, IList<long> Mids)
+        public virtual IDictionary<long, IModel> GetByIds(IModel mode, IList<long> Mids)
         {
-            var dics = new Dictionary<long, Imodel>();
+            var dics = new Dictionary<long, IModel>();
             List<long> nocahceids = new List<long>();
             nocahceids.AddRange(Mids);
             foreach (var m in _modelCacheEngine)
@@ -163,9 +163,9 @@ namespace Oyster.Core.Orm
 
             return null;
         }
-        public virtual IDictionary<long, Imodel> GetByIdsFromDb(Imodel mode, IList<long> Mids)
+        public virtual IDictionary<long, IModel> GetByIdsFromDb(IModel mode, IList<long> Mids)
         {
-            var dics = new Dictionary<long, Imodel>();
+            var dics = new Dictionary<long, IModel>();
             List<long> nocahceids = new List<long>();
             nocahceids.AddRange(Mids);
             foreach (var m in _modelEngine)
@@ -191,7 +191,7 @@ namespace Oyster.Core.Orm
             return dics;
         }
 
-        public virtual IDictionary<long, Imodel> GetByOpGuid(Imodel mode, string guid)
+        public virtual IDictionary<long, IModel> GetByOpGuid(IModel mode, string guid)
         {
             foreach (var m in _modelEngine)
             {
@@ -204,7 +204,7 @@ namespace Oyster.Core.Orm
             return null;
         }
 
-        public virtual IList<Imodel> Filter(Imodel mode, Condition condition, Mpager mp = null, OrderBy orderby = null)
+        public virtual IList<IModel> Filter(IModel mode, Condition condition, MPager mp = null, OrderBy orderby = null)
         {
             var dic = FilterWithId(mode, condition, mp, orderby);
             if (dic != null && dic.Count > 0)
@@ -214,7 +214,7 @@ namespace Oyster.Core.Orm
             return null;
         }
 
-        public virtual IDictionary<long, Imodel> FilterWithId(Imodel mode, Condition condition, Mpager mp = null, OrderBy orderby = null)
+        public virtual IDictionary<long, IModel> FilterWithId(IModel mode, Condition condition, MPager mp = null, OrderBy orderby = null)
         {
             foreach (var m in _modelCacheEngine)
             {
@@ -240,13 +240,13 @@ namespace Oyster.Core.Orm
             return null;
         }
 
-        public virtual int Update(Imodel mode, ValuePair val, Condition condition)
+        public virtual int Update(IModel mode, ValuePair val, Condition condition)
         {
             string op = "";
             return Update(mode, val, condition, out op);
         }
 
-        public virtual int Update(Imodel mode, ValuePair val, Condition condition, out string opguid)
+        public virtual int Update(IModel mode, ValuePair val, Condition condition, out string opguid)
         {
             opguid = "";
             foreach (var m in _modelEngine)
@@ -261,7 +261,7 @@ namespace Oyster.Core.Orm
             return 0;
         }
 
-        public string Insert(Imodel mode)
+        public string Insert(IModel mode)
         {
             string opguid = "";
             foreach (var m in _modelEngine)
@@ -279,7 +279,7 @@ namespace Oyster.Core.Orm
 
         #region modeCacheEngine
 
-        public Imodel Get(Type type, long id)
+        public IModel Get(Type type, long id)
         {
             if (type == null || id < 1)
             {
@@ -290,14 +290,14 @@ namespace Oyster.Core.Orm
             return Get(cachekey);
         }
 
-        public Imodel Get<T>(long id)
+        public IModel Get<T>(long id)
         {
             return Get(typeof(T), id);
         }
 
-        public Imodel Get(string cachekey)
+        public IModel Get(string cachekey)
         {
-            Imodel mode = null;
+            IModel mode = null;
 
             if (_modelCacheEngine.Count > 0)
             {
@@ -320,7 +320,7 @@ namespace Oyster.Core.Orm
             return mode;
         }
 
-        public string Set(string cachekey, Imodel mode)
+        public string Set(string cachekey, IModel mode)
         {
             if (_modelCacheEngine.Count > 0)
             {
@@ -329,7 +329,7 @@ namespace Oyster.Core.Orm
             return cachekey;
         }
 
-        public string Set(Type type, Imodel mode)
+        public string Set(Type type, IModel mode)
         {
             var dic = MReflection.GetMReflections(mode.zModelType);
             if (dic != null && dic.ContainsKey("Id"))
@@ -341,7 +341,7 @@ namespace Oyster.Core.Orm
             return null;
         }
 
-        public string Set(Imodel mode)
+        public string Set(IModel mode)
         {
             return Set(mode.GetType(), mode);
         }

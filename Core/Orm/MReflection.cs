@@ -122,7 +122,7 @@ namespace Oyster.Core.Orm
 
 
         static Dictionary<Type, Dictionary<string, string>> _modelscolumn;
-        public static Dictionary<string, string> GetModelColumns(Imodel mode)
+        public static Dictionary<string, string> GetModelColumns(IModel mode)
         {
             if (_modelscolumn == null)
             {

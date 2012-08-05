@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Oyster.Core.Orm
+namespace System
 {
-    public class Mpager
+    public class MPager
     {
         public int PageIndex = 1;
         public int PageSize = 20;

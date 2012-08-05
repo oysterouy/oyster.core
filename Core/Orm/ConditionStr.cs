@@ -11,7 +11,7 @@ namespace Oyster.Core.Orm
 {
     public partial class Condition
     {
-        public string ToString(Imodel mode)
+        public string ToString(IModel mode)
         {
             if (mode == null)
             {
@@ -226,7 +226,7 @@ namespace Oyster.Core.Orm
             return retstr;
         }
 
-        public string ToString(Imodel mode, ParameterCollection paramlist)
+        public string ToString(IModel mode, ParameterCollection paramlist)
         {
             paramlist = paramlist == null ? new ParameterCollection() : paramlist;
             if (mode == null)
@@ -349,7 +349,7 @@ namespace Oyster.Core.Orm
             return retstr;
         }
 
-        public bool IsMatch(Imodel mode)
+        public bool IsMatch(IModel mode)
         {
             bool match = false;
             if (mode == null)

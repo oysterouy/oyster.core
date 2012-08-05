@@ -11,17 +11,17 @@ namespace Oyster.Core.Orm
 {
     public class ModelDbEngine : IModelEngine
     {
-        public Imodel GetById(Imodel mode, long Mid)
+        public IModel GetById(IModel mode, long Mid)
         {
             var dic = FilterWithId(mode, new Condition("Id", Mid), null, null);
             if (dic != null && dic.ContainsKey(Mid))
             {
-                return dic[Mid] as Imodel;
+                return dic[Mid] as IModel;
             }
             return null;
         }
 
-        public IDictionary<long, Imodel> GetByIds(Imodel mode, IList<long> Mids)
+        public IDictionary<long, IModel> GetByIds(IModel mode, IList<long> Mids)
         {
             var dic = FilterWithId(mode, new Condition("Id", ConditionOperator.In, Mids), null, null);
             if (dic != null && dic.Count > 0)
@@ -31,7 +31,7 @@ namespace Oyster.Core.Orm
             return null;
         }
 
-        public IDictionary<long, Imodel> GetByOpGuid(Imodel mode, string guid)
+        public IDictionary<long, IModel> GetByOpGuid(IModel mode, string guid)
         {
             var dic = FilterWithId(mode, new Condition("OpGuid", guid), null, null);
             if (dic != null && dic.Count > 0)
@@ -41,7 +41,7 @@ namespace Oyster.Core.Orm
             return null;
         }
 
-        public IList<Imodel> Filter(Imodel m, Condition condition, Mpager mp = null, OrderBy orderby = null)
+        public IList<IModel> Filter(IModel m, Condition condition, MPager mp = null, OrderBy orderby = null)
         {
             var dic = FilterWithId(m, condition, mp, orderby);
             if (dic != null && dic.Count > 0)
@@ -51,7 +51,7 @@ namespace Oyster.Core.Orm
             return null;
         }
 
-        public IDictionary<long, Imodel> FilterWithId(Imodel m, Condition condition, Mpager mp = null, OrderBy orderby = null)
+        public IDictionary<long, IModel> FilterWithId(IModel m, Condition condition, MPager mp = null, OrderBy orderby = null)
         {
             if (m == null)
             {
@@ -78,24 +78,24 @@ namespace Oyster.Core.Orm
                 var dic = BindDataByTableWithId(m.zModelType, ds.Tables[0]);
                 if (dic != null && dic.Count > 0)
                 {
-                    Dictionary<long, Imodel> ddd = new Dictionary<long, Imodel>();
+                    Dictionary<long, IModel> ddd = new Dictionary<long, IModel>();
                     foreach (var d in dic.Keys)
                     {
-                        ddd.Add(d, dic[d] as Imodel);
+                        ddd.Add(d, dic[d] as IModel);
                     }
                     return ddd;
                 }
             }
-            return new Dictionary<long, Imodel>();
+            return new Dictionary<long, IModel>();
         }
 
-        public int Update(Imodel mode, ValuePair val, Condition condition)
+        public int Update(IModel mode, ValuePair val, Condition condition)
         {
             string op = "";
             return Update(mode, val, condition, out op);
         }
 
-        public int Update(Imodel mode, ValuePair val, Condition condition, out string opguid)
+        public int Update(IModel mode, ValuePair val, Condition condition, out string opguid)
         {
             var parms = new ParameterCollection();
             opguid = Guid.NewGuid().ToString();
@@ -116,7 +116,7 @@ namespace Oyster.Core.Orm
             return 0;
         }
 
-        public string Insert(Imodel m)
+        public string Insert(IModel m)
         {
             var ps = MReflection.GetMReflections(m.zModelType);
             var diccols = MReflection.GetModelColumns(m);
@@ -197,7 +197,7 @@ namespace Oyster.Core.Orm
         #region BindData
 
 
-        public object BindDataByRow(Imodel m, DataRow dr)
+        public object BindDataByRow(IModel m, DataRow dr)
         {
             try
             {
@@ -249,7 +249,7 @@ namespace Oyster.Core.Orm
                 {
                     foreach (DataRow dr in dt.Rows)
                     {
-                        var tm = Activator.CreateInstance(type) as Imodel;
+                        var tm = Activator.CreateInstance(type) as IModel;
                         if (tm != null)
                         {
                             var d = BindDataByRow(tm, dr);

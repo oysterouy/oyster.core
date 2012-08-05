@@ -23,7 +23,7 @@ namespace Oyster.Core.Orm
             return left;
         }
 
-        public string ToString(Imodel m)
+        public string ToString(IModel m)
         {
             StringBuilder sb = new StringBuilder();
             var ps = MReflection.GetModelColumns(m);

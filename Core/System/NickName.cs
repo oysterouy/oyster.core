@@ -4,14 +4,7 @@ using NUnit.Framework;
 using Oyster.Core.Orm;
 namespace System
 {
-    public interface IModel : Oyster.Core.Orm.Imodel
-    {
-
-    }
-    public class MPager : Oyster.Core.Orm.Mpager
-    {
-
-    }
+    #region OyOrm
 
     public class OyCondition : Oyster.Core.Orm.Condition
     {
@@ -59,6 +52,8 @@ namespace System
     {
 
     }
+
+    #endregion
 
     #region NUnit
 

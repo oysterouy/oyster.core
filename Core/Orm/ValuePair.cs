@@ -39,7 +39,7 @@ namespace Oyster.Core.Orm
             return left;
         }
 
-        public string ToString(Imodel mode, ParameterCollection paramlist)
+        public string ToString(IModel mode, ParameterCollection paramlist)
         {
             ValuePair val = this;
             StringBuilder sbder = new StringBuilder();
@@ -82,7 +82,7 @@ namespace Oyster.Core.Orm
             return "";
         }
 
-        public Imodel Update(Imodel mode)
+        public IModel Update(IModel mode)
         {
             var ps = MReflection.GetMReflections(mode.zModelType);
             ValuePair val = this;

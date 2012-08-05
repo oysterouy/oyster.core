@@ -70,8 +70,8 @@
     <Compile Include="Orm\ModelEngine.cs" />
     <Compile Include="Orm\IModelCacheEngine.cs" />
     <Compile Include="Orm\MReflection.cs" />
-    <Compile Include="Orm\IModel.cs" />
-    <Compile Include="Orm\MPager.cs" />
+    <Compile Include="System\IModel.cs" />
+    <Compile Include="System\MPager.cs" />
     <Compile Include="Orm\Condition.cs" />
     <Compile Include="Orm\ConditionStr.cs" />
     <Compile Include="System\Enums.cs" />
@@ -84,6 +84,7 @@
     <Compile Include="System\NickName.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="System\OyEngine.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Libs\OyEntity.cst" />

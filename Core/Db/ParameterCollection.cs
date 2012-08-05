@@ -12,6 +12,7 @@ namespace Oyster.Core.Db
         public const string MsSqlParamFormat = "@{0}_{1}";
         public const string MySqlParamFormat = "?{0}_{1}";
         public const string OracleParamFormat = ":{0}_{1}";
+        public const string SQLiteParamFormat = "@{0}_{1}";
         public new string Add(string key, IDataParameter pam)
         {
             string pname = "";
@@ -42,6 +43,15 @@ namespace Oyster.Core.Db
 
         protected string AddParameter(string key, IDataParameter pam)
         {
+            if (string.IsNullOrEmpty(key))
+            {
+                return "";
+            }
+            if (key[0] == '@' || key[0] == '?' || key[0] == ':')
+            {
+                key = key.Substring(1);
+            }
+
             string format = OracleParamFormat;
             switch (DbEngine.Instance.Providertype)
             {
@@ -53,6 +63,9 @@ namespace Oyster.Core.Db
                     break;
                 case "Oracle":
                     format = OracleParamFormat;
+                    break;
+                case "SQLite":
+                    format = SQLiteParamFormat;
                     break;
             }
             string nk = string.Format(format, key, "0");

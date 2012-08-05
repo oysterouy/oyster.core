@@ -154,32 +154,64 @@ namespace System
     }
 
     public class OyEngine<T> : OyEngine
+        where T : class,IModel
     {
         #region IModelEngine
 
-        public static IModel GetById(long Mid)
+        public static T GetById(long Mid)
         {
-            return GetById(typeof(T), Mid);
+            return GetById(typeof(T), Mid) as T;
         }
 
-        public static IDictionary<long, IModel> GetByIds(IList<long> Mids)
+        public static IDictionary<long, T> GetByIds(IList<long> Mids)
         {
-            return GetByIds(typeof(T), Mids);
+            IDictionary<long, T> otdata = new Dictionary<long, T>();
+            var data = GetByIds(typeof(T), Mids);
+            foreach (var d in data.Keys)
+            {
+                if (data[d] != null && data[d] is T)
+                    otdata.Add(d, data[d] as T);
+            }
+            return otdata;
         }
 
-        public static IDictionary<long, IModel> GetByOpGuid(string guid)
+        public static IDictionary<long, T> GetByOpGuid(string guid)
         {
-            return GetByOpGuid(typeof(T), guid);
+            IDictionary<long, T> otdata = new Dictionary<long, T>();
+            var data = GetByOpGuid(typeof(T), guid);
+            foreach (var d in data.Keys)
+            {
+                if (data[d] != null && data[d] is T)
+                    otdata.Add(d, data[d] as T);
+            }
+            return otdata;
         }
 
-        public static IList<IModel> Filter(OyCondition condition, MPager mp = null, OyOrderBy orderby = null)
+        public static IList<T> Filter(OyCondition condition, MPager mp = null, OyOrderBy orderby = null)
         {
-            return Filter(typeof(T), condition, mp, orderby);
+            List<T> outdata = new List<T>();
+            var data = Filter(typeof(T), condition, mp, orderby);
+            if (data != null && data.Count > 0)
+            {
+                foreach (var d in data)
+                {
+                    if (d != null && d is T)
+                        outdata.Add(d as T);
+                }
+            }
+            return outdata;
         }
 
-        public static IDictionary<long, IModel> FilterWithId(OyCondition condition, MPager mp = null, OyOrderBy orderby = null)
+        public static IDictionary<long, T> FilterWithId(OyCondition condition, MPager mp = null, OyOrderBy orderby = null)
         {
-            return FilterWithId(typeof(T), condition, mp, orderby);
+            IDictionary<long, T> otdata = new Dictionary<long, T>();
+            var data = FilterWithId(typeof(T), condition, mp, orderby);
+            foreach (var d in data.Keys)
+            {
+                if (data[d] != null && data[d] is T)
+                    otdata.Add(d, data[d] as T);
+            }
+            return otdata;
         }
 
         public static int Update(OyValue val, OyCondition condition)
@@ -191,14 +223,37 @@ namespace System
         {
             return Update(typeof(T), val, condition, out opguid);
         }
-
+        public static string Insert(T mode)
+        {
+            return ModelEngine.Instance.Insert(mode);
+        }
         #endregion
 
         #region IModelCacheEngine
 
-        public static IModel Get(long id)
+        public static T Get(long id)
         {
-            return ModelEngine.Instance.Get(typeof(T), id);
+            return ModelEngine.Instance.Get(typeof(T), id) as T; ;
+        }
+
+        public static T Get(string cachekey)
+        {
+            return ModelEngine.Instance.Get(cachekey) as T;
+        }
+
+        public static string Set(string cachekey, T mode)
+        {
+            return ModelEngine.Instance.Set(cachekey, mode);
+        }
+
+        public static string Set(Type modeType, T mode)
+        {
+            return ModelEngine.Instance.Set(modeType, mode);
+        }
+
+        public static string Set(T mode)
+        {
+            return ModelEngine.Instance.Set(mode);
         }
         #endregion
     }

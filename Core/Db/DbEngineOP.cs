@@ -337,7 +337,35 @@ namespace Oyster.Core.Db
                     return GetMsSqlPagerSql(sql, pageindex, pagesize, out rowscount, plist);
                 case "Oracle":
                     return GetOraclePagerSql(sql, pageindex, pagesize, out rowscount, plist);
+                case "SQLite":
+                    return GetSQLitePagerSql(sql, pageindex, pagesize, out rowscount, plist);
             }
+        }
+
+        public virtual string GetSQLitePagerSql(string sql, int pageindex, int pagesize, out int rowscount, IList<IDataParameter> plist)
+        {
+            string rtvalue = null;
+            rowscount = 0;
+            try
+            {
+                string countsql = string.Format("select count(id) as count_ from ({0}) ct", sql);
+                rowscount = Convert.ToInt32(ExecuteScalar(countsql, plist));
+                string querysql = "{0} limit {1},{2} ";
+                pageindex = pageindex < 1 ? 1 : pageindex;
+
+                int row_min = pageindex * pagesize - pagesize, row_max = pageindex * pagesize;
+                StringBuilder querybuilder = new StringBuilder();
+                querybuilder.AppendFormat(querysql, new string[] { sql, row_min.ToString(), row_max.ToString() });
+
+                rtvalue = querybuilder.ToString();
+            }
+            catch (Exception ee)
+            {
+                rtvalue = null;
+                Logger.Logger.Error(string.Format("DB:{0}", sql), ee);
+            }
+            finally { }
+            return rtvalue;
         }
 
         public virtual string GetMySqlPagerSql(string sql, int pageindex, int pagesize, out int rowscount, IList<IDataParameter> plist = null)

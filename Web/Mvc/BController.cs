@@ -7,6 +7,9 @@ using System;
 
 namespace Oyster.Web.Mvc
 {
+    /// <summary>
+    /// Controller 基础类
+    /// </summary>
     public class BController : Controller
     {
         #region View控制
@@ -77,11 +80,22 @@ namespace Oyster.Web.Mvc
 
         protected override void Execute(System.Web.Routing.RequestContext requestContext)
         {
-            if (!(requestContext is BRequestContext))
+            try
             {
-                requestContext = BRequestContext.New(requestContext);
+                if (!(requestContext is BRequestContext))
+                {
+                    requestContext = BRequestContext.New(requestContext);
+                }
+                base.Execute(requestContext);
             }
-            base.Execute(requestContext);
+            catch (Exception ex)
+            {
+                string action = requestContext.RouteData.Values.ContainsKey("action") ? requestContext.RouteData.Values["action"].ToString() : "default";
+                string controller = GetType().FullName;
+
+                Oyster.Core.Logger.Logger.Error(string.Format("Action Run Error:{0}-{1}", controller, action), ex);
+                throw ex;
+            }
         }
         #endregion
 

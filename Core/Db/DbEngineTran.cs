@@ -25,7 +25,7 @@ namespace Oyster.Core.Db
             }
         }
 
-        public static DbEngineTran Current
+        public static new DbEngine Instance
         {
             get
             {

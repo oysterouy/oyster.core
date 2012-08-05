@@ -8,6 +8,10 @@ namespace System
 
     public class OyCondition : Oyster.Core.Orm.Condition
     {
+        public OyCondition(string name, object value)
+            : this(name, ConditionOperator.Equal, value)
+        {
+        }
         public OyCondition(bool isexp, string expression, string name = "")
             : base(isexp, expression, name)
         {
@@ -18,9 +22,19 @@ namespace System
         {
         }
 
-        public OyCondition(Condition left, ConditionOperator op, Condition right)
+        public OyCondition(OyCondition left, ConditionOperator op, OyCondition right)
             : base(left, op, right)
         {
+        }
+
+        public static OyCondition operator |(OyCondition left, OyCondition right)
+        {
+            return new OyCondition(left, ConditionOperator.Or, right);
+        }
+
+        public static OyCondition operator &(OyCondition left, OyCondition right)
+        {
+            return new OyCondition(left, ConditionOperator.And, right);
         }
     }
     public class OyContext : ContextHelper
@@ -34,6 +48,10 @@ namespace System
             : base(name, isdesc, right)
         {
         }
+        public static OyOrderBy operator &(OyOrderBy left, OrderBy OyOrderBy)
+        {
+            return ((left as OrderBy) & (OyOrderBy as OrderBy)) as OyOrderBy;
+        }
     }
     public class OyValue : Oyster.Core.Orm.ValuePair
     {
@@ -45,6 +63,12 @@ namespace System
         public OyValue(bool isexp, string expression, string name = "")
             : base(isexp, expression, name)
         {
+
+        }
+
+        public static OyValue operator &(OyValue left, OyValue right)
+        {
+            return ((left as ValuePair) & (right as ValuePair)) as OyValue;
         }
     }
 

@@ -107,6 +107,7 @@ namespace Oyster.Core.Orm
                 {
                     var p = DbEngine.Instance.NewDataParameter("lastchange_time");
                     p.Value = DateTime.Now;
+                    parms.Add(p.ParameterName, p);
 
                     string sql = string.Format("update {0} set {1},op_guid='{2}',lastchange_time={3} where {4}"
                         , new string[] { mode.zTableName, valstr, opguid, p.ParameterName, condstr });
@@ -142,6 +143,25 @@ namespace Oyster.Core.Orm
 
                     switch (colname)
                     {
+                        case "id":
+                            //ID 列最好是自增，否则得自己传入数值
+                            if (ps.ContainsKey(key))
+                            {
+                                var mr = ps[key];
+                                if (mr != null)
+                                {
+                                    var idval = mr.GetValue(m);
+                                    if (idval != null && Convert.ToInt64(idval) > 0)
+                                    {
+                                        pter.Value = idval;
+                                        parmts.Add(pter);
+                                        break;
+                                    }
+                                }
+                            }
+                            pter.Value = DBNull.Value;
+                            parmts.Add(pter);
+                            break;
                         case "create_time":
                             pter.Value = DateTime.Now;
                             parmts.Add(pter);

@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using MySql.Data.MySqlClient;
 using System.Data.OracleClient;
 using System.Configuration;
+using System.Data.SQLite;
 
 namespace Oyster.Core.Db
 {
@@ -42,14 +43,16 @@ namespace Oyster.Core.Db
         {
             get
             {
-                //启动了事务的数据库操作，全部走当前上下文的数据库操作引擎
-                if (DbEngineTran.Instance.IsTraning)
-                {
-                    return DbEngineTran.Instance;
-                }
                 if (_instance == null)
                 {
                     _instance = NewEngine();
+                }
+                if (!(_instance is DbEngineTran))
+                {
+                    if (DbEngineTran.Instance.IsTraning)
+                    {
+                        return DbEngineTran.Instance;
+                    }
                 }
                 return _instance;
             }
@@ -69,6 +72,9 @@ namespace Oyster.Core.Db
                     break;
                 case "oracle":
                     connect = new OracleConnection(cset.ConnectionString);
+                    break;
+                case "sqlite":
+                    connect = new SQLiteConnection(cset.ConnectionString);
                     break;
             }
             return connect;
@@ -94,13 +100,13 @@ namespace Oyster.Core.Db
                     }
                     else
                     {
-                        throw new Exception("请在配置文件connectionStrings节点中配置连接语句DbEngineConnectionString的ProviderName项为“mysql or mssql or oracle or 继承DbEngine的子类完全类名”,以明确当前使用的引擎!");
+                        throw new Exception("请在配置文件connectionStrings节点中配置连接语句DbEngineConnectionString的ProviderName项为“mysql or mssql or oracle or sqlite or 继承DbEngine的子类完全类名”,以明确当前使用的引擎!");
                     }
                 }
 
                 if (engine == null)
                 {
-                    throw new Exception("请在配置文件connectionStrings节点中配置连接语句DbEngineConnectionString的ProviderName项为“mysql or mssql or oracle or 继承DbEngine的子类完全类名”,以明确当前使用的引擎!");
+                    throw new Exception("请在配置文件connectionStrings节点中配置连接语句DbEngineConnectionString的ProviderName项为“mysql or mssql or oracle or sqlite or 继承DbEngine的子类完全类名”,以明确当前使用的引擎!");
                 }
             }
             catch (Exception ee)
@@ -128,6 +134,9 @@ namespace Oyster.Core.Db
                     break;
                 case "Oracle":
                     p = new OracleParameter(":" + name, null);
+                    break;
+                case "SQLite":
+                    p = new SQLiteParameter("@" + name, null);
                     break;
                 default:
                     p = new MySqlParameter("?" + name, null);
@@ -199,6 +208,10 @@ namespace Oyster.Core.Db
                 if (DbConnection is OracleConnection)
                 {
                     return "Oracle";
+                }
+                if (DbConnection is SQLiteConnection)
+                {
+                    return "SQLite";
                 }
                 return "Mysql";
             }
@@ -326,6 +339,9 @@ namespace Oyster.Core.Db
                     break;
                 case "Oracle":
                     adapter = new OracleDataAdapter(cmd as OracleCommand);
+                    break;
+                case "SQLite":
+                    adapter = new SQLiteDataAdapter(cmd as SQLiteCommand);
                     break;
             }
 

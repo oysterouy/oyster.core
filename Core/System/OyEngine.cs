@@ -4,11 +4,30 @@ using System.Linq;
 using System.Text;
 using Oyster.Core.Orm;
 using Oyster.Core.Common;
+using Oyster.Core.Cache;
+using Oyster.Core.Db;
 
 namespace System
 {
     public class OyEngine
     {
+        public static CacheEngine Cache
+        {
+            get
+            {
+                return CacheEngine.Instance;
+            }
+        }
+
+        public static DbEngine DbHelper
+        {
+            get
+            {
+                return DbEngine.Instance;
+            }
+        }
+
+
         public static int AddDbEngine(IModelEngine engine)
         {
             return ModelEngine.Instance.AddDbEngine(engine);

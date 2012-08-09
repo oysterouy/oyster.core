@@ -27,6 +27,14 @@ namespace System
             }
         }
 
+        public static DbEngineTran DbTran
+        {
+            get
+            {
+                return DbEngineTran.Instance;
+            }
+        }
+
 
         public static int AddDbEngine(IModelEngine engine)
         {

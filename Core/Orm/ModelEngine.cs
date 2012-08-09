@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Oyster.Core.Db;
 
 
 namespace Oyster.Core.Orm
@@ -138,31 +139,37 @@ namespace Oyster.Core.Orm
             var dics = new Dictionary<long, IModel>();
             List<long> nocahceids = new List<long>();
             nocahceids.AddRange(Mids);
-            foreach (var m in _modelCacheEngine)
+
+            //启动了事务，不走缓存
+            if (!DbEngineTran.Instance.IsTraning)
             {
-                var dic = m.GetByIds(mode, nocahceids);
-                if (dic != null && dic.Count > 0)
+                foreach (var m in _modelCacheEngine)
                 {
-                    foreach (var id in dic.Keys)
+                    var dic = m.GetByIds(mode, nocahceids);
+                    if (dic != null && dic.Count > 0)
                     {
-                        if (dic[id] != null)
+                        foreach (var id in dic.Keys)
                         {
-                            nocahceids.Remove(id);
-                            dics.Add(id, dic[id]);
+                            if (dic[id] != null)
+                            {
+                                nocahceids.Remove(id);
+                                dics.Add(id, dic[id]);
+                            }
                         }
                     }
+                    if (nocahceids.Count < 1)
+                    {
+                        break;
+                    }
                 }
-                if (nocahceids.Count < 1)
+                //缓存中拿不完整，则全部从数据库拿
+                if (nocahceids.Count > 0)
                 {
-                    break;
+                    return GetByIdsFromDb(mode, Mids);
                 }
             }
-            if (nocahceids.Count > 0)
-            {
 
-            }
-
-            return null;
+            return GetByIdsFromDb(mode, Mids);
         }
         public virtual IDictionary<long, IModel> GetByIdsFromDb(IModel mode, IList<long> Mids)
         {
@@ -217,25 +224,33 @@ namespace Oyster.Core.Orm
 
         public virtual IDictionary<long, IModel> FilterWithId(IModel mode, Condition condition, MPager mp = null, OrderBy orderby = null)
         {
-            foreach (var m in _modelCacheEngine)
+            //启动了事务，不走缓存
+            if (!DbEngineTran.Instance.IsTraning)
             {
-                var dic = m.FilterWithId(mode, condition, mp, orderby);
-                if (dic != null && dic.Count > 0)
+                foreach (var m in _modelCacheEngine)
                 {
-                    return dic;
+                    var dic = m.FilterWithId(mode, condition, mp, orderby);
+                    if (dic != null && dic.Count > 0)
+                    {
+                        return dic;
+                    }
                 }
             }
-
             foreach (var m in _modelEngine)
             {
                 var dic = m.FilterWithId(mode, condition, mp, orderby);
                 if (dic != null && dic.Count > 0)
                 {
+                    //如果启动了事务，则会在事务提交后执行更新缓存，不在事务中则立即执行
                     if (_modelCacheEngine.Count > 0)
                     {
-                        _modelCacheEngine[0].SetFilterWithId(mode, dic, condition, mp, orderby);
+                        DbEngineTran.Instance.AddCommitEvent(new Action(() =>
+                        {
+                            _modelCacheEngine[0].SetFilterWithId(mode, dic, condition, mp, orderby);
+                        }));
                     }
                     return dic;
+
                 }
             }
             return null;
@@ -347,7 +362,5 @@ namespace Oyster.Core.Orm
             return Set(mode.GetType(), mode);
         }
         #endregion
-
-
     }
 }

@@ -17,7 +17,21 @@ namespace ExampleCore
                 , new MPager { PageIndex = 2, PageSize = 20 }, new OyOrderBy(TCustomerDefaultvaluesTest.iD));
             if (ls.Count > 0)
             {
+                try
+                {
+                    OyEngine.DbTran.Begin();
+                    OyEngine<TCustomerDefaultvaluesTest>.Update(new OyValue(TCustomerDefaultvaluesTest.cReateTime, DateTime.Now)
+                    , new OyCondition(TCustomerDefaultvaluesTest.iD, ConditionOperator.In, ls.Keys.ToArray()));
 
+                    ls = OyEngine<TCustomerDefaultvaluesTest>.FilterWithId(new OyCondition(TCustomerDefaultvaluesTest.iD, ConditionOperator.Greater, 0)
+                , new MPager { PageIndex = 2, PageSize = 20 }, new OyOrderBy(TCustomerDefaultvaluesTest.iD));
+
+                    OyEngine.DbTran.Commit();
+                }
+                finally
+                {
+                    OyEngine.DbTran.Rollback();
+                }
             }
         }
     }

@@ -31,12 +31,6 @@ namespace Oyster.Core.Orm
             return Get(k);
         }
 
-        public string SetById(IModel mode, long Mid)
-        {
-            string k = GetKeyById(mode.GetType(), Mid);
-            return Set(k, mode);
-        }
-
         public IDictionary<long, IModel> GetByIds(IModel mode, IList<long> Mids)
         {
             Dictionary<long, IModel> dic = new Dictionary<long, IModel>();
@@ -108,12 +102,11 @@ namespace Oyster.Core.Orm
             if (dic != null && dic.Count > 0)
             {
                 CacheEngine.Instance.SetValue(k, dic.Keys.ToArray(), TimeSpan.FromMilliseconds(CacheTimeOut));
-                foreach (long id in dic.Keys)
+                foreach (var item in dic.Values)
                 {
-                    var item = dic[id];
                     if (item != null)
                     {
-                        SetById(item, id);
+                        Set(item);
                     }
                 }
             }

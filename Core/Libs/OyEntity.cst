@@ -54,7 +54,7 @@ namespace Models
 		<script runat="template">
 		public string GetColumnName(ColumnSchema column)
 		{
-			string result= StringUtil.ToPascalCase(column.Name);
+			string result= StringUtil.ToPascalCase(column.Name.ToLower());
 			
 			if(result.ToCharArray().Length>1)
 			{

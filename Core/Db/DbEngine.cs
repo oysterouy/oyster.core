@@ -316,7 +316,13 @@ namespace Oyster.Core.Db
                 {
                     foreach (var v in paramters)
                     {
-                        cmd.Parameters.Add(v);
+                        var p = NewDataParameter(v.ParameterName);
+                        p.ParameterName = v.ParameterName;
+                        p.Value = v.Value;
+                        p.DbType = v.DbType;
+                        p.Direction = v.Direction;
+
+                        cmd.Parameters.Add(p);
                     }
                 }
             }

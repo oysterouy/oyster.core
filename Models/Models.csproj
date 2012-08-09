@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="ExUsers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TCustomerDefaultvaluesTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Oyster.Core.csproj">

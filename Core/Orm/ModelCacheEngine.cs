@@ -31,6 +31,12 @@ namespace Oyster.Core.Orm
             return Get(k);
         }
 
+        public string SetById(IModel mode, long Mid)
+        {
+            string k = GetKeyById(mode.GetType(), Mid);
+            return Set(k, mode);
+        }
+
         public IDictionary<long, IModel> GetByIds(IModel mode, IList<long> Mids)
         {
             Dictionary<long, IModel> dic = new Dictionary<long, IModel>();
@@ -50,7 +56,12 @@ namespace Oyster.Core.Orm
 
         public IList<IModel> Filter(IModel m, Condition condition, MPager mp = null, OrderBy orderby = null)
         {
-            throw new NotImplementedException();
+            var dic = FilterWithId(m, condition, mp, orderby);
+            if (dic != null && dic.Count > 0)
+            {
+                return dic.Values.ToList();
+            }
+            return null;
         }
 
         public IDictionary<long, IModel> FilterWithId(IModel m, Condition condition, MPager mp = null, OrderBy orderby = null)
@@ -97,6 +108,14 @@ namespace Oyster.Core.Orm
             if (dic != null && dic.Count > 0)
             {
                 CacheEngine.Instance.SetValue(k, dic.Keys.ToArray(), TimeSpan.FromMilliseconds(CacheTimeOut));
+                foreach (long id in dic.Keys)
+                {
+                    var item = dic[id];
+                    if (item != null)
+                    {
+                        SetById(item, id);
+                    }
+                }
             }
             return k;
         }

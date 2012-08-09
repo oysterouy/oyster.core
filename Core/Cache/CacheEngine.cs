@@ -58,6 +58,7 @@ namespace Oyster.Core.Cache
         {
             foreach (var c in _cacheEngine)
             {
+                v.SetEngine(c);
                 c.Set(k, v);
             }
         }
@@ -90,10 +91,7 @@ namespace Oyster.Core.Cache
 
         public string SetValue(string key, object value, TimeSpan tspan = default(TimeSpan), TimeSpan lasttouchspan = default(TimeSpan))
         {
-            foreach (var c in _cacheEngine)
-            {
-                c.Set(key, new CacheEntry(c, key, value, tspan, lasttouchspan));
-            }
+            Set(key, new CacheEntry(key, value, tspan, lasttouchspan));
             return key;
         }
 

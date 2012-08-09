@@ -167,10 +167,13 @@ namespace System
         {
             IDictionary<long, T> otdata = new Dictionary<long, T>();
             var data = GetByIds(typeof(T), Mids);
-            foreach (var d in data.Keys)
+            if (data != null && data.Count > 0)
             {
-                if (data[d] != null && data[d] is T)
-                    otdata.Add(d, data[d] as T);
+                foreach (var d in data.Keys)
+                {
+                    if (data[d] != null && data[d] is T)
+                        otdata.Add(d, data[d] as T);
+                }
             }
             return otdata;
         }
@@ -178,11 +181,13 @@ namespace System
         public static IDictionary<long, T> GetByOpGuid(string guid)
         {
             IDictionary<long, T> otdata = new Dictionary<long, T>();
-            var data = GetByOpGuid(typeof(T), guid);
-            foreach (var d in data.Keys)
+            var data = GetByOpGuid(typeof(T), guid); if (data != null && data.Count > 0)
             {
-                if (data[d] != null && data[d] is T)
-                    otdata.Add(d, data[d] as T);
+                foreach (var d in data.Keys)
+                {
+                    if (data[d] != null && data[d] is T)
+                        otdata.Add(d, data[d] as T);
+                }
             }
             return otdata;
         }
@@ -206,10 +211,13 @@ namespace System
         {
             IDictionary<long, T> otdata = new Dictionary<long, T>();
             var data = FilterWithId(typeof(T), condition, mp, orderby);
-            foreach (var d in data.Keys)
+            if (data != null)
             {
-                if (data[d] != null && data[d] is T)
-                    otdata.Add(d, data[d] as T);
+                foreach (var d in data.Keys)
+                {
+                    if (data[d] != null && data[d] is T)
+                        otdata.Add(d, data[d] as T);
+                }
             }
             return otdata;
         }

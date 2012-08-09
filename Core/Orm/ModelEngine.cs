@@ -23,6 +23,7 @@ namespace Oyster.Core.Orm
             _modelCacheEngine = new List<IModelCacheEngine>();
 
             _modelEngine.Add(new ModelDbEngine());
+            _modelCacheEngine.Add(new ModelCacheEngine());
         }
 
         protected static ModelEngine _instance;

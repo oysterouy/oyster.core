@@ -10,8 +10,15 @@ namespace ExampleCore
     {
         static void Main()
         {
-            NewSQLiteDB sl = new NewSQLiteDB();
-            sl.TestSQLite();
+            //NewSQLiteDB sl = new NewSQLiteDB();
+            //sl.TestSQLite();
+
+            var ls = OyEngine<TCustomerDefaultvaluesTest>.FilterWithId(new OyCondition(TCustomerDefaultvaluesTest.iD, ConditionOperator.Greater, 0)
+                , new MPager { PageIndex = 2, PageSize = 20 }, new OyOrderBy(TCustomerDefaultvaluesTest.iD));
+            if (ls.Count > 0)
+            {
+
+            }
         }
     }
     [OyTestFixture]

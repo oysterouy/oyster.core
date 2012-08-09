@@ -29,7 +29,7 @@ namespace Oyster.Core.Cache
         public string SetValue(string key, object value, TimeSpan tspan = default(TimeSpan)
             , TimeSpan lasttouchspan = default(TimeSpan))
         {
-            Set(key, new CacheEntry(this, key, value, tspan, lasttouchspan));
+            Set(key, new CacheEntry(key, value, tspan, lasttouchspan));
             return key;
         }
 
@@ -39,6 +39,7 @@ namespace Oyster.Core.Cache
             {
                 if (v != null)
                 {
+                    v.SetEngine(this);
                     this[k] = v;
                 }
             }

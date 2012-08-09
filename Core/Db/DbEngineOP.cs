@@ -291,33 +291,33 @@ namespace Oyster.Core.Db
         /// 执行SQL语句，返回查询数据
         /// </summary>
         /// <returns></returns>
-        public virtual DataSet ExecuteQuery(string sql, int pageindex, int pagesize, out int rowscount)
+        public virtual DataSet ExecuteQuery(string sql, string orderby, int pageindex, int pagesize, out int rowscount)
         {
-            return ExecuteQuery(GetPagerSql(sql, pageindex, pagesize, out rowscount));
+            return ExecuteQuery(GetPagerSql(sql, orderby, pageindex, pagesize, out rowscount));
         }
         /// <summary>
         /// 执行SQL语句，返回查询数据
         /// </summary>
         /// <returns></returns>
-        public virtual DataSet ExecuteQuery(string sql, string[] args, int pageindex, int pagesize, out int rowscount)
+        public virtual DataSet ExecuteQuery(string sql, string orderby, string[] args, int pageindex, int pagesize, out int rowscount)
         {
-            return ExecuteQuery(GetPagerSql(sql, pageindex, pagesize, out rowscount), args);
+            return ExecuteQuery(GetPagerSql(sql, orderby, pageindex, pagesize, out rowscount), args);
         }
         /// <summary>
         /// 执行SQL语句，返回查询数据
         /// </summary>
         /// <returns></returns>
-        public virtual DataSet ExecuteQuery(string sql, IDataParameter param, int pageindex, int pagesize, out int rowscount)
+        public virtual DataSet ExecuteQuery(string sql, string orderby, IDataParameter param, int pageindex, int pagesize, out int rowscount)
         {
-            return ExecuteQuery(GetPagerSql(sql, pageindex, pagesize, out rowscount), param);
+            return ExecuteQuery(GetPagerSql(sql, orderby, pageindex, pagesize, out rowscount), param);
         }
         /// <summary>
         /// 执行SQL语句，返回查询数据
         /// </summary>
         /// <returns></returns>
-        public virtual DataSet ExecuteQuery(string sql, IList<IDataParameter> paramters, int pageindex, int pagesize, out int rowscount)
+        public virtual DataSet ExecuteQuery(string sql, string orderby, IList<IDataParameter> paramters, int pageindex, int pagesize, out int rowscount)
         {
-            return ExecuteQuery(GetPagerSql(sql, pageindex, pagesize, out rowscount), paramters);
+            return ExecuteQuery(GetPagerSql(sql, orderby, pageindex, pagesize, out rowscount), paramters);
         }
         #endregion
 
@@ -326,23 +326,23 @@ namespace Oyster.Core.Db
         /// 获取带分页的SQL
         /// </summary>
         /// <returns></returns>
-        public virtual string GetPagerSql(string sql, int pageindex, int pagesize, out int rowscount, IList<IDataParameter> plist = null)
+        public virtual string GetPagerSql(string sql, string orderby, int pageindex, int pagesize, out int rowscount, IList<IDataParameter> plist = null)
         {
             switch (Providertype)
             {
                 default:
                 case "Mysql":
-                    return GetMySqlPagerSql(sql, pageindex, pagesize, out rowscount, plist);
+                    return GetMySqlPagerSql(sql, orderby, pageindex, pagesize, out rowscount, plist);
                 case "Mssql":
-                    return GetMsSqlPagerSql(sql, pageindex, pagesize, out rowscount, plist);
+                    return GetMsSqlPagerSql(sql, orderby, pageindex, pagesize, out rowscount, plist);
                 case "Oracle":
-                    return GetOraclePagerSql(sql, pageindex, pagesize, out rowscount, plist);
+                    return GetOraclePagerSql(sql, orderby, pageindex, pagesize, out rowscount, plist);
                 case "SQLite":
-                    return GetSQLitePagerSql(sql, pageindex, pagesize, out rowscount, plist);
+                    return GetSQLitePagerSql(sql, orderby, pageindex, pagesize, out rowscount, plist);
             }
         }
 
-        public virtual string GetSQLitePagerSql(string sql, int pageindex, int pagesize, out int rowscount, IList<IDataParameter> plist)
+        public virtual string GetSQLitePagerSql(string sql, string orderby, int pageindex, int pagesize, out int rowscount, IList<IDataParameter> plist)
         {
             string rtvalue = null;
             rowscount = 0;
@@ -350,12 +350,12 @@ namespace Oyster.Core.Db
             {
                 string countsql = string.Format("select count(id) as count_ from ({0}) ct", sql);
                 rowscount = Convert.ToInt32(ExecuteScalar(countsql, plist));
-                string querysql = "{0} limit {1},{2} ";
+                string querysql = "{0} {3} limit {1},{2} ";
                 pageindex = pageindex < 1 ? 1 : pageindex;
 
                 int row_min = pageindex * pagesize - pagesize, row_max = pageindex * pagesize;
                 StringBuilder querybuilder = new StringBuilder();
-                querybuilder.AppendFormat(querysql, new string[] { sql, row_min.ToString(), row_max.ToString() });
+                querybuilder.AppendFormat(querysql, new string[] { sql, row_min.ToString(), row_max.ToString(), orderby });
 
                 rtvalue = querybuilder.ToString();
             }
@@ -368,7 +368,7 @@ namespace Oyster.Core.Db
             return rtvalue;
         }
 
-        public virtual string GetMySqlPagerSql(string sql, int pageindex, int pagesize, out int rowscount, IList<IDataParameter> plist = null)
+        public virtual string GetMySqlPagerSql(string sql, string orderby, int pageindex, int pagesize, out int rowscount, IList<IDataParameter> plist = null)
         {
             string rtvalue = null;
             rowscount = 0;
@@ -376,12 +376,12 @@ namespace Oyster.Core.Db
             {
                 string countsql = string.Format("select count(id) as count_ from ({0}) ct", sql);
                 rowscount = Convert.ToInt32(ExecuteScalar(countsql, plist));
-                string querysql = "{0} limit {1},{2} ";
+                string querysql = "{0} {3} limit {1},{2} ";
                 pageindex = pageindex < 1 ? 1 : pageindex;
 
                 int row_min = pageindex * pagesize - pagesize, row_max = pageindex * pagesize;
                 StringBuilder querybuilder = new StringBuilder();
-                querybuilder.AppendFormat(querysql, new string[] { sql, row_min.ToString(), row_max.ToString() });
+                querybuilder.AppendFormat(querysql, new string[] { sql, row_min.ToString(), row_max.ToString(), orderby });
 
                 rtvalue = querybuilder.ToString();
             }
@@ -394,12 +394,37 @@ namespace Oyster.Core.Db
             return rtvalue;
         }
 
-        public virtual string GetMsSqlPagerSql(string sql, int pageindex, int pagesize, out int rowscount, IList<IDataParameter> plist = null)
+        public virtual string GetMsSqlPagerSql(string sql, string orderby, int pageindex, int pagesize, out int rowscount, IList<IDataParameter> plist = null)
         {
-            throw new Exception("未实现");
+            string rtvalue = null;
+            rowscount = 0;
+            try
+            {
+                string countsql = string.Format("select count(id) as count_ from ({0}) ct", sql);
+                rowscount = Convert.ToInt32(ExecuteScalar(countsql, plist));
+
+                //必须有默认排序
+                orderby = string.IsNullOrEmpty(orderby) ? " order by id asc" : orderby;
+                //{0原SQL，{1}记录小于的ROWNUM，{2}记录大于等于的ROWNUM,{3} orderby。
+                string querysql = "select * from (select q1.*,ROW_NUMBER() OVER({3}) AS ROWNUM_ from ({0}) q1) q2 where ROWNUM_<={1} and ROWNUM_>={2}";
+
+                //Index从1开始
+                int row_min = pageindex * pagesize - pagesize + 1, row_max = pageindex * pagesize;
+                StringBuilder querybuilder = new StringBuilder();
+                querybuilder.AppendFormat(querysql, new string[] { sql, row_max.ToString(), row_min.ToString(), orderby });
+
+                rtvalue = querybuilder.ToString();
+            }
+            catch (Exception ee)
+            {
+                rtvalue = null;
+                Logger.Logger.Error(string.Format("DB:{0}", sql), ee);
+            }
+            finally { }
+            return rtvalue;
         }
 
-        public virtual string GetOraclePagerSql(string sql, int pageindex, int pagesize, out int rowscount, IList<IDataParameter> plist = null)
+        public virtual string GetOraclePagerSql(string sql, string orderby, int pageindex, int pagesize, out int rowscount, IList<IDataParameter> plist = null)
         {
             string rtvalue = null;
             rowscount = 0;
@@ -416,14 +441,14 @@ namespace Oyster.Core.Db
                 }
                 //{0}原SQL，{1}记录小于的ROWNUM，{2}记录大于等于的ROWNUM。
 
-                string leftquerysql = "select * from (select q1.*,ROWNUM AS ROWNUM_ from ({0}) q1 where ROWNUM<={1}) q2 where ROWNUM>={2}";
-                string rightquerysql = "select * from (select q1.*,ROWNUM AS ROWNUM_ from ({0}) q1 where ROWNUM>={2}) q2 where ROWNUM<={1}";
+                string leftquerysql = "select * from (select q1.*,ROWNUM AS ROWNUM_ from ({0} {3}) q1 where ROWNUM<={1}) q2 where ROWNUM>={2}";
+                string rightquerysql = "select * from (select q1.*,ROWNUM AS ROWNUM_ from ({0} {3}) q1 where ROWNUM>={2}) q2 where ROWNUM<={1}";
                 string querysql = onleft ? leftquerysql : rightquerysql;
 
                 //Index从1开始
                 int row_min = pageindex * pagesize - pagesize + 1, row_max = pageindex * pagesize;
                 StringBuilder querybuilder = new StringBuilder();
-                querybuilder.AppendFormat(querysql, new string[] { sql, row_max.ToString(), row_min.ToString() });
+                querybuilder.AppendFormat(querysql, new string[] { sql, row_max.ToString(), row_min.ToString(), orderby });
 
                 rtvalue = querybuilder.ToString();
             }

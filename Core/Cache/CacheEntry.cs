@@ -78,23 +78,34 @@ namespace Oyster.Core.Cache
         /// <param name="val">缓存数据</param>
         /// <param name="tspan">固定过期间隔时间</param>
         /// <param name="lasttouchspan">最后访问过期间隔时间</param>
-        public CacheEntry(ICache engine, string key, object val, TimeSpan tspan = default(TimeSpan)
+        public CacheEntry(string key, object val, TimeSpan tspan = default(TimeSpan)
             , TimeSpan lasttouchspan = default(TimeSpan))
         {
             Key = key;
             _value = val;
-            _engine = engine;
+
             CreateTime = DateTime.Now;
             TouchTime = DateTime.Now;
 
             TimeOut = tspan;
             LastTouchTimeOut = lasttouchspan;
         }
+        /// <summary>
+        /// 要实现失效自动移除缓存必须调用本方法设置缓存容器
+        /// </summary>
+        /// <param name="engine"></param>
+        public void SetEngine(ICache engine)
+        {
+            _engine = engine;
+        }
 
         public void Dispose()
         {
             _value = null;
-            _engine.Remove(Key);
+            if (_engine != null)
+            {
+                _engine.Remove(Key);
+            }
         }
     }
 }

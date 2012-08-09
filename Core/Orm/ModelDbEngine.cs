@@ -57,18 +57,22 @@ namespace Oyster.Core.Orm
             {
                 throw new Exception("Model Class Must Implements the interface IModel");
             }
-            string sqlexp = "select {0} from {1} where {2} {3}";
+            string sqlexp = "select {0} from {1} where {2} ";
             var dicols = MReflection.GetModelColumns(m);
             string columns = string.Join(",", dicols.Values);
 
             var plist = Db.DbEngine.NewParameters();
             string condstr = condition.ToString(m, plist);
             string orderbystr = orderby == null ? "" : orderby.ToString(m);
-            string sql = string.Format(sqlexp, new string[] { columns, m.zTableName, condstr, orderbystr });
+            string sql = string.Format(sqlexp, new string[] { columns, m.zTableName, condstr });
 
             if (mp != null)
             {
-                sql = DbEngine.Instance.GetPagerSql(sql, mp.PageIndex, mp.PageSize, out mp.TotalCount, plist.Values.ToArray());
+                sql = DbEngine.Instance.GetPagerSql(sql, orderbystr, mp.PageIndex, mp.PageSize, out mp.TotalCount, plist.Values.ToArray());
+            }
+            else
+            {
+                sql += orderbystr;
             }
 
             var ds = DbEngine.Instance.ExecuteQuery(sql, plist.Values.ToArray());

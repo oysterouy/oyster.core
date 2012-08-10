@@ -3,36 +3,55 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Models;
+using Oyster.Core.Common;
+using System.Collections;
 
 namespace ExampleCore
 {
     public class Progroum
     {
+        public string backstr(List<long> ls, string s = "", int i = 0)
+        {
+            return null;
+        }
         static void Main()
         {
+            Progroum p = new Progroum();
+            if (p != null)
+            {
+                Dictionary<string, object> dic = new Dictionary<string, object>();
+                dic.Add("ls", new long[] { 12, 234, 55 });
+                dic.Add("s", "ddddd");
+
+                MethodInvork.Invork<string>("backstr", dic, p.GetType(), p);
+            }
+            //Helper.InvorkMethod(p, null);
+
+            ////---测试SQLite数据库操作
             //NewSQLiteDB sl = new NewSQLiteDB();
             //sl.TestSQLite();
 
-            var ls = OyEngine<TCustomerDefaultvaluesTest>.FilterWithId(new OyCondition(TCustomerDefaultvaluesTest.iD, ConditionOperator.Greater, 0)
-                , new MPager { PageIndex = 2, PageSize = 20 }, new OyOrderBy(TCustomerDefaultvaluesTest.iD));
-            if (ls.Count > 0)
-            {
-                try
-                {
-                    OyEngine.DbTran.Begin();
-                    OyEngine<TCustomerDefaultvaluesTest>.Update(new OyValue(TCustomerDefaultvaluesTest.cReateTime, DateTime.Now)
-                    , new OyCondition(TCustomerDefaultvaluesTest.iD, ConditionOperator.In, ls.Keys.ToArray()));
+            ////---测试MSSQL数据库操作
+            //var ls = OyEngine<TCustomerDefaultvaluesTest>.FilterWithId(new OyCondition(TCustomerDefaultvaluesTest.iD, ConditionOperator.Greater, 0)
+            //    , new MPager { PageIndex = 2, PageSize = 20 }, new OyOrderBy(TCustomerDefaultvaluesTest.iD));
+            //if (ls.Count > 0)
+            //{
+            //    try
+            //    {
+            //        OyEngine.DbTran.Begin();
+            //        OyEngine<TCustomerDefaultvaluesTest>.Update(new OyValue(TCustomerDefaultvaluesTest.cReateTime, DateTime.Now)
+            //        , new OyCondition(TCustomerDefaultvaluesTest.iD, ConditionOperator.In, ls.Keys.ToArray()));
 
-                    ls = OyEngine<TCustomerDefaultvaluesTest>.FilterWithId(new OyCondition(TCustomerDefaultvaluesTest.iD, ConditionOperator.Greater, 0)
-                , new MPager { PageIndex = 2, PageSize = 20 }, new OyOrderBy(TCustomerDefaultvaluesTest.iD));
+            //        ls = OyEngine<TCustomerDefaultvaluesTest>.FilterWithId(new OyCondition(TCustomerDefaultvaluesTest.iD, ConditionOperator.Greater, 0)
+            //    , new MPager { PageIndex = 2, PageSize = 20 }, new OyOrderBy(TCustomerDefaultvaluesTest.iD));
 
-                    OyEngine.DbTran.Commit();
-                }
-                finally
-                {
-                    OyEngine.DbTran.Rollback();
-                }
-            }
+            //        OyEngine.DbTran.Commit();
+            //    }
+            //    finally
+            //    {
+            //        OyEngine.DbTran.Rollback();
+            //    }
+            //}
         }
     }
     [OyTestFixture]

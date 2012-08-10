@@ -57,11 +57,13 @@
     <Compile Include="Cache\CacheEntry.cs" />
     <Compile Include="Cache\DotNetCache.cs" />
     <Compile Include="Cache\ICache.cs" />
+    <Compile Include="Common\BindData.cs" />
     <Compile Include="Common\ContextHelper.cs" />
     <Compile Include="Common\Helper.cs" />
     <Compile Include="Common\InstanceHelper.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Common\MethodInvork.cs" />
     <Compile Include="Db\DbEngine.cs" />
     <Compile Include="Db\DbEngineTran.cs" />
     <Compile Include="Db\DbEngineOP.cs" />

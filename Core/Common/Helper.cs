@@ -149,5 +149,35 @@ namespace Oyster.Core.Common
             }));
             return s;
         }
+
+        public static bool IsBaseType(Type tp, Type basetp)
+        {
+            if (basetp.IsInterface)
+            {
+                var intfs = tp.GetInterfaces();
+                if (intfs != null && intfs.Length > 0)
+                {
+                    foreach (var it in intfs)
+                    {
+                        if (it.Equals(basetp))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (tp.Equals(basetp) || (tp.BaseType != null && tp.BaseType.Equals(basetp)))
+                {
+                    return true;
+                }
+                if (!tp.BaseType.Equals(typeof(Object)))
+                {
+                    return IsBaseType(tp.BaseType, basetp);
+                }
+            }
+            return false;
+        }
     }
 }

@@ -16,20 +16,20 @@ namespace ExampleCore
         }
         static void Main()
         {
-            Progroum p = new Progroum();
-            if (p != null)
-            {
-                Dictionary<string, object> dic = new Dictionary<string, object>();
-                dic.Add("ls", new long[] { 12, 234, 55 });
-                dic.Add("s", "ddddd");
+            //Progroum p = new Progroum();
+            //if (p != null)
+            //{
+            //    Dictionary<string, object> dic = new Dictionary<string, object>();
+            //    dic.Add("ls", new long[] { 12, 234, 55 });
+            //    dic.Add("s", "ddddd");
 
-                MethodInvork.Invork<string>("backstr", dic, p.GetType(), p);
-            }
+            //    MethodInvork.Invork<string>("backstr", dic, p.GetType(), p);
+            //}
             //Helper.InvorkMethod(p, null);
 
-            ////---测试SQLite数据库操作
-            //NewSQLiteDB sl = new NewSQLiteDB();
-            //sl.TestSQLite();
+            //---测试SQLite数据库操作
+            NewSQLiteDB sl = new NewSQLiteDB();
+            sl.TestSQLite();
 
             ////---测试MSSQL数据库操作
             //var ls = OyEngine<TCustomerDefaultvaluesTest>.FilterWithId(new OyCondition(TCustomerDefaultvaluesTest.iD, ConditionOperator.Greater, 0)

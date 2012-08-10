@@ -16,11 +16,12 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -98,7 +99,7 @@
   <ItemGroup>
     <Content Include="Libs\MySql.Data.dll" />
     <Content Include="Libs\nunit.framework.dll" />
-    <Content Include="Libs\System.Data.SQLite_x86.dll" />
+    <Content Include="Libs\System.Data.SQLite.x32.dll" />
     <Content Include="Libs\System.Data.SQLite.dll" />
   </ItemGroup>
   <ItemGroup />

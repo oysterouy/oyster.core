@@ -67,6 +67,10 @@ namespace ExampleCore.Controller.Site
 
         public ActionResult Views(long id = -1)
         {
+            if (id > 0)
+            {
+                ViewData.Model = OyEngine<CxActivitySendOy>.GetById(id);
+            }
             return View();
         }
         [HttpPost]

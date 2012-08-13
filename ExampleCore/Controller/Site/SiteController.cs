@@ -72,6 +72,38 @@ namespace ExampleCore.Controller.Site
         [HttpPost]
         public ActionResult Views(CxActivitySendOy cxact)
         {
+            if (cxact.Id > 0)
+            {
+                OyEngine<CxActivitySendOy>.Update(new OyValue(CxActivitySendOy.sTatus, cxact.Status)
+                , new OyCondition(CxActivitySendOy.iD, cxact.Id));
+            }
+            else
+            {
+                try
+                {
+                    OyEngine.DbTran.Begin();
+                    string opguid = OyEngine<CxActivitySendOy>.Insert(cxact);
+                    var ls = OyEngine<CxActivitySendOy>.GetByOpGuid(opguid);
+                    if (ls != null && ls.Count > 0)
+                    {
+                        cxact = ls[0];
+                        for (int i = 0; i < 5; i++)
+                        {
+                            CxDiscountBatchOy cxd = new CxDiscountBatchOy();
+                            cxd.ActivitySendId = cxact.Id;
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("插入失败：" + cxact.ToJson());
+                    }
+                    OyEngine.DbTran.Commit();
+                }
+                finally
+                {
+                    OyEngine.DbTran.Rollback();
+                }
+            }
             return View();
         }
     }

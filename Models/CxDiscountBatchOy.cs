@@ -23,7 +23,7 @@ namespace Models
         #region public - FieldsInfo
         public System.Int64 Id { get; set; }
         public System.String BatchNo { get; set; }
-        public System.Int32? ActivitySendId { get; set; }
+        public System.Int64? ActivitySendId { get; set; }
         public System.Int32 FaceValue { get; set; }
         public System.Int32 Count { get; set; }
         public System.Int32 TakeCount { get; set; }

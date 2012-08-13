@@ -34,7 +34,7 @@ namespace Models
 		
 		#region public - FieldsInfo
 		<% for (int i = 0; i < SourceTable.Columns.Count; i++) { %>
-		public <%=GetSystemType(SourceTable.Columns[i]) %><%=SourceTable.Columns[i].AllowDBNull.ToString().ToLower()=="true"&& SourceTable.Columns[i].SystemType.ToString()!="System.String"&& SourceTable.Columns[i].SystemType.ToString()!="System.Object" ? "?":""%>  <%=GetColumnName(SourceTable.Columns[i])  %>;
+		public <%=GetSystemType(SourceTable.Columns[i]) %><%=SourceTable.Columns[i].AllowDBNull.ToString().ToLower()=="true"&& SourceTable.Columns[i].SystemType.ToString()!="System.String"&& SourceTable.Columns[i].SystemType.ToString()!="System.Object" ? "?":""%>  <%=GetColumnName(SourceTable.Columns[i])  %>{get;set;}
 		<% } %>
 		#endregion
 		

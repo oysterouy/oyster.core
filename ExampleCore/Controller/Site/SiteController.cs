@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
+using Models;
 
 namespace ExampleCore.Controller.Site
 {
@@ -10,14 +11,45 @@ namespace ExampleCore.Controller.Site
     public partial class SiteController : Oyster.Web.Mvc.BController
     {
         #region Index
-        public ActionResult Index(string name = null)
+        public ActionResult Index(CxActivitySendOy cxact = null, decimal ysmin = 0, decimal ysmax = 0)
         {
-            Proxy.UsersProxy p = new Proxy.UsersProxy();
-
-            if (OyNUniting.IsUnitRuning)
+            return View();
+            var cond = new OyCondition(CxActivitySendOy.sTatus, ConditionOperator.NotEqual, -1);
+            if (cxact != null)
             {
-                OyAssert.AreEqual(p.GetUserName(), name);
+                if (!string.IsNullOrEmpty(cxact.ActivityType) && cxact.ActivityType != "-1")
+                {
+                    cond &= new OyCondition(CxActivitySendOy.aCtivityType, cxact.ActivityType);
+                }
+                if (!string.IsNullOrEmpty(cxact.ActivityName))
+                {
+                    cond &= new OyCondition(CxActivitySendOy.aCtivityName, ConditionOperator.Like, cxact.ActivityName);
+                }
+                if (!string.IsNullOrEmpty(cxact.CxDiscount))
+                {
+                    cond &= new OyCondition(CxActivitySendOy.cXDiscount, ConditionOperator.Like, cxact.CxDiscount);
+                }
+                if (ysmin > 0 && ysmax > 0)
+                {
+                    cond &= (new OyCondition(CxActivitySendOy.aCtivityBudget, ConditionOperator.GreaterThanOrEqual, ysmin)
+                        & new OyCondition(CxActivitySendOy.aCtivityBudget, ConditionOperator.Less, ysmax));
+                }
+                else
+                {
+                    if (ysmax > 0)
+                    {
+                        cond &= new OyCondition(CxActivitySendOy.aCtivityBudget, ConditionOperator.Less, ysmax);
+                    } if (ysmin > 0)
+                    {
+                        cond &= new OyCondition(CxActivitySendOy.aCtivityBudget, ConditionOperator.GreaterThanOrEqual, ysmin);
+                    }
+                }
             }
+            var _mp = ViewData["_MP"] as MPager;
+            _mp = _mp == null ? new MPager { PageSize = 20, PageIndex = 1 } : _mp;
+
+            var ls = OyEngine<CxActivitySendOy>.Filter(cond, _mp);
+
 
             return View();
         }
@@ -27,10 +59,20 @@ namespace ExampleCore.Controller.Site
         {
             using (new OyNUniting())
             {
-                Index("AAA");
+                Index();
             }
         }
         #endregion
         #endregion
+
+        public ActionResult Views(long id = -1)
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Views(CxActivitySendOy cxact)
+        {
+            return View();
+        }
     }
 }

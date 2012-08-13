@@ -1,5 +1,106 @@
-﻿<div>
-<h1>index</h1>
+﻿@{
+    var sm = ViewData["SM"] as CxActivitySendOy;
+    sm = sm == null ? new CxActivitySendOy { } : sm;
+
+    var mzlist = ViewData["MZ"] as List<CxActivitySendOy>;
+    mzlist = mzlist == null ? new List<CxActivitySendOy>() : mzlist;
+
+    var ds = ViewData["DS"] as List<CxDiscountOy>;
+    ds = ds == null ? new List<CxDiscountOy>() : ds;
+}
+<div>
+    <form action="#" method="post">
+    <div>
+        <h1>
+            index</h1>
+    </div>
+    <div>
+        <span>活动类型:</span>
+        <select name="@CxActivitySendOy.aCtivityType">
+            <option value="-1">请选择</option>
+            <option value="ZCYHQ">注册优惠券</option>
+            <option value="CXYHQ">促销优惠券</option>
+            <option value="QCYHQ">全场优惠券</option>
+        </select>
+        <span>活动名称：</span>
+        <input type="text" name="@CxActivitySendOy.aCtivityName" value="@sm.ActivityName" />
+        <span>活动预算</span>
+        <input type="text" name="ysmin" value="0" />
+        -
+        <input type="text" name="ysmax" value="0" />
+        <span>描述</span>
+        <input type="text" name="@CxActivitySendOy.cXDiscount" value="@sm.CxDiscount" />
+    </div>
+    <div>
+        <button type="submit" name="_op" value="search">
+            查 询
+        </button>
+    </div>
+    <div>
+        <table cellpadding="0" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>
+                        操作
+                    </th>
+                    <th>
+                        活动类型
+                    </th>
+                    <th>
+                        活动名称
+                    </th>
+                    <th>
+                        活动预算
+                    </th>
+                    <th>
+                        规则
+                    </th>
+                    <th>
+                        活动描述
+                    </th>
+                    <th>
+                        开始时间
+                    </th>
+                    <th>
+                        结束时间
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    foreach (var m in mzlist)
+                    {
+                    <tr>
+                        <td>
+                            <a href="#">删除</a>
+                        </td>
+                        <td>
+                            @m.ActivityType
+                        </td>
+                        <td>
+                            @m.ActivityName
+                        </td>
+                        <td>
+                            @m.ActivityBudget.ToString("0.00")
+                        </td>
+                        <td>@m.CxRule
+                        </td>
+                        <td>@m.CxDiscount
+                        </td>
+                        <td>
+                            @m.StartDatetime.ToString("0.00")
+                        </td>
+                        <td>
+                            @m.EndDatetime.ToString("0.00")
+                        </td>
+                    </tr>
+                    }
+                }
+            </tbody>
+        </table>
+        <div>
+            @Html.Action("_MPage")
+        </div>
+    </div>
+    </form>
 </div>
-
-

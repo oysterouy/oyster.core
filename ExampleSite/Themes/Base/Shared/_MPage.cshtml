@@ -1,0 +1,26 @@
+﻿@{
+    Layout = null;
+    var mp = ViewData["_MP"] as MPager;
+    mp = mp == null ? new MPager { PageIndex = 1, PageSize = 20 } : mp;
+}
+<div style="margin: 3px; text-align: right;">
+    <div style="float: right; margin-right: 15px;">
+        <input id="hid_mpindex" type="hidden" name="_mpindex" value="1" />
+        <span>共 @mp.TotalCount 条记录,@mp.PageCount 页,当前第 @mp.PageIndex 页.</span> <a href="javascript:void(1);"
+            onclick="_mpChangeIndex(1);">首页</a> <a
+            href="javascript:void(1);" onclick="_mpChangeIndex(@(mp.PageIndex - 1 > 0 ? mp.PageIndex - 1 : 1));">
+                上一页</a> <a href="javascript:void(1);" onclick="_mpChangeIndex(@(mp.PageIndex + 1 > mp.PageCount ? mp.PageCount : mp.PageIndex + 1));">
+                    下一页</a> <a href="javascript:void(1);" onclick="_mpChangeIndex(@mp.PageCount);">末页</a>
+        <span>跳转页面：</span>
+        <input type="text" name="_mpindex" value="@mp.PageIndex" style="width:35px" />
+        <button type="submit">
+            GO</button>
+    </div>
+    <div class="clear">
+    </div>
+    <script language="javascript" type="text/javascript">
+        function _mpChangeIndex(idx) {
+            $("#hid_mpindex").val(idx > 0 ? idx : 1);
+        }
+    </script>
+</div>

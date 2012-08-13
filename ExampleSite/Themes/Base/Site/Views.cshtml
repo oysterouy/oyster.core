@@ -1,0 +1,41 @@
+﻿@{
+    var sm = ViewData["SM"] as CxActivitySendOy;
+}
+<div>
+    <form action="#" method="post">
+    <div>
+        <h1>
+            新增注册送活动</h1>
+        <div>
+            <input type="hidden" name="@CxActivitySendOy.iD" />
+            <p>
+                <span>活动主题：</span><input type="text" name="@CxActivitySendOy.aCtivityName" value="@sm.ActivityName" /></p>
+            <p>
+                <span>活动预算：</span><input type="text" name ="@CxActivitySendOy.aCtivityBudget" value="@sm.ActivityBudget.ToString("0.00")"/></p>
+            <p>
+                <span>开始时间：</span><input type="text" name ="@CxActivitySendOy.sTartDatetime"  value="@sm.StartDatetime"/></p>
+            <p>
+                <span>结束时间：</span><input type="text" name ="@CxActivitySendOy.eNdDatetime"  value="@sm.EndDatetime"/></p>
+            <p>
+                <span>活动状态：</span>
+                <input type="radio" @{if (sm.Status == 1)
+                                      {
+                                          Html.Echo(" checked=\"checked\"");
+                                      } }  name="@CxActivitySendOy.sTatus" />
+                启用
+                <input type="radio"  @{if (sm.Status == 2)
+                                       {
+                                           Html.Echo(" checked=\"checked\"");
+                                       } }  name="@CxActivitySendOy.sTatus" />
+                停用
+            </p>
+        </div>
+        <div>
+            <button type="submit" name="_op" value="save">
+                保存</button>
+            <button type="reset">
+            </button>
+        </div>
+    </div>
+    </form>
+</div>
